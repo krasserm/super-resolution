@@ -39,7 +39,7 @@ def set_profile(args):
         args.optimizer = 'adam-weightnorm'
         args.learning_rate = 1e-3
         args.num_filters = 32
-        args.num_res_blocks = 16
+        args.num_res_blocks = 32
         args.res_expansion = 6
 
     # ----------------------------------

@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------
-# See https://github.com/krasserm/weightnorm/tree/keras-upgrade/keras_2
+# See https://github.com/krasserm/weightnorm/tree/master/keras_2
 # See https://arxiv.org/abs/1602.07868
 # -----------------------------------------------------------------------
 

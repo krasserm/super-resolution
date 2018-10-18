@@ -47,6 +47,7 @@ def main(args):
     directory must have been trained for the same downgrade operator (bicubic or
     unknown) and the same scale (2, 3 or 4).
     """
+
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
     mps = model_paths(args.indir)
@@ -57,6 +58,7 @@ def main(args):
         for mp in mps:
             reset(args.gpu_memory_fraction)
             psnr = evaluate_model(mp, generator)
+            logging.info('PSNR = %.4f of model %s', psnr, mp)
             psnr_dict[mp] = psnr
 
         logging.info('Write results to %s', args.outfile)

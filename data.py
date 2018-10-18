@@ -15,6 +15,7 @@ class DIV2KDataset:
                all image ids from the specified subset.
         :param cache_images: whether to cache loaded images in memory. Default is True.
         """
+
         if not os.path.exists(path):
             raise FileNotFoundError(f"Path {path} doesn't exist")
         if subset not in ['train', 'valid']:
@@ -45,6 +46,7 @@ class DIV2KDataset:
         :param repeat: True if generator shall repeatedly loop over this dataset.
         :return: (LR, HR) PIL image pair generator.
         """
+
         if downgrade not in ['bicubic', 'unknown']:
             raise ValueError("downgrade must be 'bicubic' or 'unknown'")
         if scale not in [2, 3, 4]:
@@ -72,12 +74,17 @@ class DIV2KDataset:
     def _image(self, path):
         img = self.cache.get(path)
         if not img:
-            img = Image.open(path)
-            if img.mode != 'RGB':
-                img = img.convert('RGB')
+            img = load_image(path)
             if self.cache_images:
                 self.cache[path] = img
         return img
+
+
+def load_image(path):
+    img = Image.open(path)
+    if img.mode != 'RGB':
+        img = img.convert('RGB')
+    return img
 
 
 def random_transform(generator, random_rotate=True, random_flip=True, random_crop=True, crop_size=96):
@@ -128,7 +135,10 @@ def batch(generator, batch_size):
 
 
 def random_generator(path, subset, downgrade, scale, batch_size=16, image_ids=None, cache_images=True):
-    """Convenience generator for randomly cropped image pairs."""
+    """
+    Convenience generator for randomly cropped image pairs.
+    """
+
     ds = DIV2KDataset(path=path, subset=subset, image_ids=image_ids, cache_images=cache_images)
     gen = ds.pair_generator(downgrade=downgrade, scale=scale)
     gen = random_transform(gen, crop_size=48 * scale)
@@ -137,7 +147,10 @@ def random_generator(path, subset, downgrade, scale, batch_size=16, image_ids=No
 
 
 def fullsize_generator(path, subset, downgrade, scale, image_ids=None, cache_images=True):
-    """Convenience generator for full-size image pairs and batch size 1."""
+    """
+    Convenience generator for full-size image pairs and batch size 1.
+    """
+
     ds = DIV2KDataset(path=path, subset=subset, image_ids=image_ids, cache_images=cache_images)
     gen = ds.pair_generator(downgrade=downgrade, scale=scale)
     gen = batch(gen, batch_size=1)
