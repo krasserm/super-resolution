@@ -178,8 +178,11 @@ def main(args):
 
     callbacks = [
         tensor_board_callback(train_dir),
-        model_checkpoint_callback(models_dir, monitor=f'val_{monitor}', save_best_only=args.benchmark),
-        learning_rate_callback(step_size=args.learning_rate_step_size, decay=args.learning_rate_decay)]
+        learning_rate_callback(step_size=args.learning_rate_step_size,
+                               decay=args.learning_rate_decay),
+        model_checkpoint_callback(models_dir,
+                                  monitor=f'val_{monitor}',
+                                  save_best_only=args.save_best_models_only or args.benchmark)]
 
     history = model.fit_generator(training_generator,
                                   epochs=args.epochs,
