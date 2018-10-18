@@ -58,7 +58,7 @@ def main(args):
         for mp in mps:
             reset(args.gpu_memory_fraction)
             psnr = evaluate_model(mp, generator)
-            logging.info('PSNR = %.4f of model %s', psnr, mp)
+            logging.info('PSNR = %.4f for model %s', psnr, mp)
             psnr_dict[mp] = psnr
 
         logging.info('Write results to %s', args.outfile)
@@ -66,7 +66,7 @@ def main(args):
             json.dump(psnr_dict, f)
 
         best_psnr, best_model = select_best_psnr(psnr_dict)
-        logging.info('Best PSNR = %.4f of model %s', best_psnr, best_model)
+        logging.info('Best PSNR = %.4f for model %s', best_psnr, best_model)
     else:
         logging.warning('No models found in %s', args.indir)
 
