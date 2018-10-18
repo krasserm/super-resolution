@@ -56,7 +56,7 @@ def set_profile(args):
         args.res_expansion = 4
 
     # WDSR-A baseline (modified to 16 residual blocks)
-    elif args.profile == 'wdsr-a-8':
+    elif args.profile == 'wdsr-a-16':
         args.model = 'wdsr-a'
         args.optimizer = 'adam-weightnorm'
         args.learning_rate = 1e-3
@@ -65,12 +65,12 @@ def set_profile(args):
         args.res_expansion = 4
 
     # WDSR-A baseline (modified to 32 residual blocks)
-    elif args.profile == 'wdsr-a-8':
+    elif args.profile == 'wdsr-a-32':
         args.model = 'wdsr-a'
         args.optimizer = 'adam-weightnorm'
         args.learning_rate = 1e-3
         args.num_filters = 32
-        args.num_res_blocks = 8
+        args.num_res_blocks = 32
         args.res_expansion = 4
 
     # ----------------------------------
