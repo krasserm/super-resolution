@@ -42,6 +42,20 @@ The following table gives an overview of available pre-trained models and their 
         <th>Training</th>
     </tr>
     <tr>
+        <td><a href="https://drive.google.com/open?id=1Q2-fPMWm9EPGh4XEnfXKcxcSHuDik_3a">wdsr-b-16-x2</a></td>
+        <td>x2</td>
+        <td>1.78M</td>
+        <td>34.664</td>
+        <td><a href="https://drive.google.com/open?id=1iCTCzSd6bDr0h_J0bTRS3xB8SDyshHj-">settings</a></td>
+    </tr>
+    <tr>
+        <td><a href="https://drive.google.com/open?id=1xifqCrJeCypsMGzL-SWj7wzdNMCn35S-">wdsr-b-16-x4</a></td>
+        <td>x4</td>
+        <td>1.79M</td>
+        <td>29.039</td>
+        <td><a href="https://drive.google.com/open?id=1DzqDHiyy5xTbrwYKSU9hjRkNfoVAA7Vj">settings</a></td>
+    </tr>
+    <tr>
         <td><a href="https://drive.google.com/open?id=1Vr_eLXnNA7H6zNWmEFKOBv4-xvOBt5iu">wdsr-b-8-x2</a></td>
         <td>x2</td>
         <td>0.89M</td>
@@ -61,13 +75,6 @@ The following table gives an overview of available pre-trained models and their 
         <td>0.90M</td>
         <td>28.912</td>
         <td><a href="https://drive.google.com/open?id=1jgQfwGR_HVqVUjQqkvHCDhHowvTBmP5_">settings</a></td>
-    </tr>
-    <tr>
-        <td><a href="https://drive.google.com/open?id=1Q2-fPMWm9EPGh4XEnfXKcxcSHuDik_3a">wdsr-b-16-x2</a></td>
-        <td>x2</td>
-        <td>1.78M</td>
-        <td>34.664</td>
-        <td><a href="https://drive.google.com/open?id=1iCTCzSd6bDr0h_J0bTRS3xB8SDyshHj-">settings</a></td>
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1tp7r_oUf8Ohd9q-ouGApS7qNtqg1IRLt">wdsr-a-8-x2</a></td>
@@ -91,10 +98,10 @@ instead of 16.
 ## Demo
 
 The example in this section super-resolves images in directory [`./demo`](demo) with factor x4 using the downloaded 
-[wdsr-b-8-x4](https://drive.google.com/open?id=1WCpIY9G-9fL9cTa3We9ry3hm-ePT58b_) **baseline model** and writes the 
+[wdsr-b-16-x4](https://drive.google.com/open?id=1xifqCrJeCypsMGzL-SWj7wzdNMCn35S-) **baseline model** and writes the 
 results to directory `./output`:
 
-    python demo.py -i ./demo -o ./output --model=./wdsr-b-8-x4-psnr-28.9121.h5
+    python demo.py -i ./demo -o ./output --model=./wdsr-b-16-x4-psnr-29.0393.h5
     
 The following figures compare the super-resolution results (SR) with the corresponding low-resolution (LR) and 
 high-resolution (HR) images and an x4 resize with bicubic interpolation. The demo images were cropped from images in 
