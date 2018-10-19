@@ -1,4 +1,5 @@
 # -----------------------------------------------------------------------
+# See https://github.com/openai/weightnorm/tree/master/keras
 # See https://github.com/krasserm/weightnorm/tree/master/keras_2
 # See https://arxiv.org/abs/1602.07868
 # -----------------------------------------------------------------------
