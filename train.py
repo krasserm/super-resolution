@@ -63,58 +63,41 @@ def learning_rate_callback(step_size, decay, verbose=1):
     return LearningRateScheduler(schedule, verbose=verbose)
 
 
-def mae_scale_2(hr, sr):
-    hr, sr = _trim_hr_in_training(2)(hr, sr)
+def mae(hr, sr):
+    hr, sr = _crop_hr_in_training(hr, sr)
     return mean_absolute_error(hr, sr)
-
-
-def mae_scale_3(hr, sr):
-    hr, sr = _trim_hr_in_training(3)(hr, sr)
-    return mean_absolute_error(hr, sr)
-
-
-def mae_scale_4(hr, sr):
-    hr, sr = _trim_hr_in_training(4)(hr, sr)
-    return mean_absolute_error(hr, sr)
-
-
-def psnr_scale_2(hr, sr):
-    hr, sr = _trim_hr_in_training(2)(hr, sr)
-    return psnr(hr, sr)
-
-
-def psnr_scale_3(hr, sr):
-    hr, sr = _trim_hr_in_training(3)(hr, sr)
-    return psnr(hr, sr)
-
-
-def psnr_scale_4(hr, sr):
-    hr, sr = _trim_hr_in_training(4)(hr, sr)
-    return psnr(hr, sr)
 
 
 def psnr(hr, sr):
+    hr, sr = _crop_hr_in_training(hr, sr)
     return tf.image.psnr(hr, sr, max_val=255)
 
 
-def _trim_hr_in_training(scale):
-    def trim(hr, sr):
-        margin = scale * 2
-        hr = K.in_train_phase(hr[:, margin:-margin, margin:-margin, :], hr)
-        hr.uses_learning_phase = True
-        return hr, sr
-    return trim
+def _crop_hr_in_training(hr, sr):
+    """
+    Remove margin of size scale*2 from hr in training phase.
+
+    The margin is computed from size difference of hr and sr
+    so that no explicit scale parameter is needed. This is only
+    needed for WDSR models.
+    """
+
+    margin = (tf.shape(hr)[1] - tf.shape(sr)[1]) // 2
+    hr = K.in_train_phase(hr[:, margin:-margin, margin:-margin, :], hr)
+    hr.uses_learning_phase = True
+    return hr, sr
 
 
 def _load_model(path):
     return load_model(path, custom_objects={'tf': tf,
                                             'AdamWithWeightnorm': wn.AdamWithWeightnorm,
-                                            'mae_scale_2': mae_scale_2,
-                                            'mae_scale_3': mae_scale_3,
-                                            'mae_scale_4': mae_scale_4,
-                                            'psnr_scale_2': psnr_scale_2,
-                                            'psnr_scale_3': psnr_scale_2,
-                                            'psnr_scale_4': psnr_scale_4,
+                                            'mae_scale_2': mae, # backwards-compatibility
+                                            'mae_scale_3': mae, # backwards-compatibility
+                                            'mae_scale_4': mae, # backwards-compatibility
+                                            'psnr_scale_2': psnr, # backwards-compatibility
+                                            'psnr_scale_3': psnr, # backwards-compatibility
+                                            'psnr_scale_4': psnr, # backwards-compatibility
+                                            'mae': mae,
                                             'psnr': psnr})
 
 
@@ -141,19 +124,13 @@ def main(args):
                                                 batch_size=args.batch_size, cache_images=cache_images, image_ids=args.validation_images)
 
     if args.model == "edsr":
-        monitor = 'psnr'
-        metrics = [psnr]
-
         loss = mean_absolute_error
         model = edsr.edsr(scale=args.scale,
                           num_filters=args.num_filters,
                           num_res_blocks=args.num_res_blocks,
                           res_block_scaling=args.res_scaling)
     else:
-        monitor = f'psnr_scale_{args.scale}'
-        metrics = [globals()[monitor]]
-
-        loss = globals()[f'mae_scale_{args.scale}']
+        loss = mae
         model_fn = wdsr.wdsr_b if args.model == 'wdsr_b' else wdsr.wdsr_a
         model = model_fn(scale=args.scale,
                          num_filters=args.num_filters,
@@ -162,12 +139,12 @@ def main(args):
                          res_block_scaling=args.res_scaling)
 
     if args.optimizer == 'adam-weightnorm':
-        model.compile(optimizer=wn.AdamWithWeightnorm(lr=args.learning_rate), loss=loss, metrics=metrics)
+        model.compile(optimizer=wn.AdamWithWeightnorm(lr=args.learning_rate), loss=loss, metrics=[psnr])
         if args.num_init_batches > 0:
             logging.info('Data-based initialization of weights with %d batches', args.num_init_batches)
             model_weightnorm_init(model, training_generator, args.num_init_batches)
     else:
-        model.compile(optimizer=Adam(lr=args.learning_rate), loss=loss, metrics=metrics)
+        model.compile(optimizer=Adam(lr=args.learning_rate), loss=loss, metrics=[psnr])
 
     if args.pretrained_model:
         logging.info('Initialization with weights from pre-trained model %s', args.pretrained_model)
@@ -181,7 +158,7 @@ def main(args):
         learning_rate_callback(step_size=args.learning_rate_step_size,
                                decay=args.learning_rate_decay),
         model_checkpoint_callback(models_dir,
-                                  monitor=f'val_{monitor}',
+                                  monitor='val_psnr',
                                   save_best_only=args.save_best_models_only or args.benchmark)]
 
     history = model.fit_generator(training_generator,
