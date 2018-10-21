@@ -27,73 +27,123 @@ This project requires Python 3.6 or higher.
 
 ## Pre-trained models
 
-Pre-trained models are available [here](https://drive.google.com/drive/folders/13YjKmP5O8NK_E_dFlK-34Okn1IIM9c58).
-Each directory contains a model together with the training settings. At the moment, only baseline models available
-and I'll upload bigger models later. You can also train models yourself as described in section [Training](#training). 
-The following table gives an overview of available pre-trained models and their performance (PSNR) on the DIV2K benchmark:
+Pre-trained models are available [here](https://drive.google.com/drive/folders/13YjKmP5O8NK_E_dFlK-34Okn1IIM9c58). 
+Each directory contains a model together with the training settings. All of them were trained with bicubic downscaled 
+images from the DIV2K training set for 300 epochs with 1000 updates per epoch. Batch size is 16. Random crops and 
+transformations were made as described in the EDSR paper. Model performance is measured in dB 
+[PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) on the DIV2K benchmark (images 801-900 of DIV2K 
+validation set, RGB channels, without self-ensemble). See also section [Training](#training).
 
- 
 <table>
     <tr>
         <th>Model</th>
         <th>Scale</th>
+        <th>Residual<br/>blocks </th>
         <th>Parameters</th>
-        <th>PSNR (DIV2K)</th>
+        <th>PSNR</th>
         <th>Training</th>
+    </tr>
+    <tr>
+        <td><a href="https://drive.google.com/open?id=1V4XHMFZo35yB_NTaD0dyw1_plS-78-Ju">wdsr-b-32-x2</a></td>
+        <td>x2</td>
+        <td>32</td>
+        <td>3.55M</td>
+        <td>34.80 dB</td>
+        <td><a href="https://drive.google.com/open?id=1UgWCb7sSaKjDZDsZE93HhBEm4Rg7ofpa">settings</a></td>
+    </tr>
+    <tr>
+        <td>wdsr-b-32-x4</td>
+        <td>x4</td>
+        <td>32</td>
+        <td>3.56M</td>
+        <td></td>
+        <td></td>
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1Q2-fPMWm9EPGh4XEnfXKcxcSHuDik_3a">wdsr-b-16-x2</a></td>
         <td>x2</td>
+        <td>16</td>
         <td>1.78M</td>
-        <td>34.664</td>
+        <td>34.66 dB</td>
         <td><a href="https://drive.google.com/open?id=1iCTCzSd6bDr0h_J0bTRS3xB8SDyshHj-">settings</a></td>
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1xifqCrJeCypsMGzL-SWj7wzdNMCn35S-">wdsr-b-16-x4</a></td>
         <td>x4</td>
+        <td>16</td>
         <td>1.79M</td>
-        <td>29.039</td>
+        <td>29.04 dB</td>
         <td><a href="https://drive.google.com/open?id=1DzqDHiyy5xTbrwYKSU9hjRkNfoVAA7Vj">settings</a></td>
     </tr>
     <tr>
-        <td><a href="https://drive.google.com/open?id=1Vr_eLXnNA7H6zNWmEFKOBv4-xvOBt5iu">wdsr-b-8-x2</a></td>
+        <td><a href="https://drive.google.com/open?id=1Vr_eLXnNA7H6zNWmEFKOBv4-xvOBt5iu">wdsr-b-8-x2</a><sup> 1)</sup></td>
         <td>x2</td>
+        <td>8</td>
         <td>0.89M</td>
-        <td>34.539</td>
+        <td>34.54 dB</td>
         <td><a href="https://drive.google.com/open?id=1VL4i4i1XuMy65wbq8fiWOOfMNziRqmdE">settings</a></td>
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1CSdinKy9E3B4dm-lp7O_W-MYXp0GoB9g">wdsr-b-8-x3</a></td>
         <td>x3</td>
+        <td>8</td>
         <td>0.89M</td>
-        <td>30.865</td>
+        <td>30.87 dB</td>
         <td><a href="https://drive.google.com/open?id=1B2w-ZSlD96RkCQ5C_JbQEDrdIMez7y3D">settings</a></td>
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1WCpIY9G-9fL9cTa3We9ry3hm-ePT58b_">wdsr-b-8-x4</a></td>
         <td>x4</td>
+        <td>8</td>
         <td>0.90M</td>
-        <td>28.912</td>
+        <td>28.91 dB</td>
         <td><a href="https://drive.google.com/open?id=1jgQfwGR_HVqVUjQqkvHCDhHowvTBmP5_">settings</a></td>
+    </tr>
+    <tr>
+        <td>wdsr-a-16-x2</a><sup> 2)</sup></td>
+        <td>x2</td>
+        <td>16</td>
+        <td>1.19M</td>
+        <td>34.77 dB</td>
+        <td></td>
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1tp7r_oUf8Ohd9q-ouGApS7qNtqg1IRLt">wdsr-a-8-x2</a></td>
         <td>x2</td>
+        <td>8</td>
         <td>0.60M</td>
-        <td>34.469</td>
+        <td>34.47 dB</td>
         <td><a href="https://drive.google.com/open?id=1hnL23k9_UYvGeAhY2nWOMM1rP2k-t8d-">settings</a></td>
     </tr>
     <tr>
-        <td><a href="https://drive.google.com/open?id=1ujCCDTJIheyGW-2wLU96tH13dGMEg84i">edsr-8-x2</a><sup>*)</sup></td>
+        <td>edsr-16-x2</a><sup> 3)</sup></td>
         <td>x2</td>
+        <td>16</td>
+        <td>1.37M</td>
+        <td>34.61 dB</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><a href="https://drive.google.com/open?id=1ujCCDTJIheyGW-2wLU96tH13dGMEg84i">edsr-8-x2</a><sup> 4)</sup></td>
+        <td>x2</td>
+        <td>8</td>
         <td>0.78M</td>
-        <td>34.414</td>
+        <td>34.41 dB</td>
         <td><a href="https://drive.google.com/open?id=1x8EjZxvTt0WO4zSdLDgBkKep3jYntrWc">settings</a></td>
     </tr>
 </table>
 
-<sup>*)</sup> This is a smaller baseline model than that described in the EDSR paper. It has only 8 residual blocks 
-instead of 16.
+<sup>1)</sup> This is the WDSR-B baseline with 8 residual blocks referenced on the [WDSR project page](https://github.com/JiahuiYu/wdsr_ntire2018). 
+Measured PSNRs are identical.
+
+<sup>2)</sup> This is the WDSR baseline with 16 residual blocks referenced on the [WDSR project page](https://github.com/JiahuiYu/wdsr_ntire2018).
+PSNR is taken from there until a pre-trained model is available here.
+
+<sup>3)</sup> This is the EDSR baseline referenced on the [EDSR project page](https://github.com/thstkdgus35/EDSR-PyTorch).
+PSNR is taken from there until a pre-trained model is available here.
+
+<sup>4)</sup> This is a smaller EDSR baseline model than that referenced on the [EDSR project page](https://github.com/thstkdgus35/EDSR-PyTorch). 
+It has only 8 residual blocks instead of 16.
 
 ## Demo
 
@@ -182,7 +232,8 @@ at the end of evaluation:
     Best PSNR = 34.5394 for model ./output/20181016-063620/models/epoch-294-psnr-37.4630.h5 
 
 The higher PSNR value in the model filename must not be confused with the value generated by `bench.py`. The PSNR value 
-in the filename was generated during training by validating against smaller, randomly cropped images.
+in the filename was generated during training by validating against smaller, randomly cropped images which tends to yield
+higher PSNR values.
 
 ## Other implementations
 
