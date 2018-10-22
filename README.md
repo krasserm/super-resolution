@@ -29,10 +29,9 @@ This project requires Python 3.6 or higher.
 
 Pre-trained models are available [here](https://drive.google.com/drive/folders/13YjKmP5O8NK_E_dFlK-34Okn1IIM9c58). 
 Each directory contains a model together with the training settings. All of them were trained with bicubic downscaled 
-images from the DIV2K training set for 300 epochs with 1000 updates per epoch. Batch size is 16. Random crops and 
-transformations were made as described in the EDSR paper. Model performance is measured in dB 
-[PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) on the DIV2K benchmark (images 801-900 of DIV2K 
-validation set, RGB channels, without self-ensemble). See also section [Training](#training).
+images from the DIV2K training set. Random crops and transformations were made as described in the EDSR paper. Model 
+performance is measured in dB [PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) on the DIV2K benchmark 
+(images 801-900 of DIV2K validation set, RGB channels, without self-ensemble). See also section [Training](#training).
 
 <table>
     <tr>
@@ -52,12 +51,12 @@ validation set, RGB channels, without self-ensemble). See also section [Training
         <td><a href="https://drive.google.com/open?id=1UgWCb7sSaKjDZDsZE93HhBEm4Rg7ofpa">settings</a></td>
     </tr>
     <tr>
-        <td>wdsr-b-32-x4</td>
+        <td><a href="https://drive.google.com/open?id=1ZTIz1YVXFTI2z3rvBfVuBSthJLJZivxC">wdsr-b-32-x4</a></td>
         <td>x4</td>
         <td>32</td>
         <td>3.56M</td>
-        <td></td>
-        <td></td>
+        <td>29.17 dB</td>
+        <td><a href="https://drive.google.com/open?id=1RhmgJkqZ86LEWfA7CAPfqBGhmNQ7Y7k7">settings</a></td>
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1Q2-fPMWm9EPGh4XEnfXKcxcSHuDik_3a">wdsr-b-16-x2</a></td>
@@ -148,10 +147,10 @@ It has only 8 residual blocks instead of 16.
 ## Demo
 
 The example in this section super-resolves images in directory [`./demo`](demo) with factor x4 using the downloaded 
-[wdsr-b-16-x4](https://drive.google.com/open?id=1xifqCrJeCypsMGzL-SWj7wzdNMCn35S-) **baseline model** and writes the 
+[wdsr-b-32-x4]() model and writes the 
 results to directory `./output`:
 
-    python demo.py -i ./demo -o ./output --model=./wdsr-b-16-x4-psnr-29.0393.h5
+    python demo.py -i ./demo -o ./output --model=./wdsr-b-32-x4-psnr-29.1736.h5
     
 The following figures compare the super-resolution results (SR) with the corresponding low-resolution (LR) and 
 high-resolution (HR) images and an x4 resize with bicubic interpolation. The demo images were cropped from images in 
