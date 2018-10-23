@@ -7,14 +7,6 @@ A [Keras](https://keras.io/)-based implementation of
 - [Enhanced Deep Residual Networks for Single Image Super-Resolution](https://arxiv.org/abs/1707.02921) (EDSR), winner 
   of the [NTIRE 2017](http://www.vision.ee.ethz.ch/ntire17/) super-resolution challenge.
 
-WDSR models are trained with *weight normalization* as described in
-
-- [Weight Normalization: A Simple Reparameterization to Accelerate Training of Deep Neural Networks](https://arxiv.org/abs/1602.07868)
-
-A modified Keras 2 [Adam optimizer](https://keras.io/optimizers/#adam) that performs weight normalization is available 
-[here](https://github.com/krasserm/weightnorm/tree/master/keras_2) and has been copied to [weightnorm.py](optimizer/weightnorm.py) 
-in this repository. 
-
 ## Setup
 
 This project requires Python 3.6 or higher.
