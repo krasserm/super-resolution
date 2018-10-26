@@ -4,11 +4,9 @@ import logging
 import argparse
 import numpy as np
 
-from data import load_image
 from model import load_model
-from util import tensorflow_session
+from util import load_image, init_session
 
-from keras import backend as K
 from PIL import Image
 
 
@@ -61,7 +59,6 @@ if __name__ == '__main__':
                         help='fraction of GPU memory to allocate')
 
     args = parser.parse_args()
-    sess = tensorflow_session(gpu_memory_fraction=args.gpu_memory_fraction)
 
-    K.tensorflow_backend.set_session(sess)
+    init_session(args.gpu_memory_fraction)
     main(args)

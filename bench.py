@@ -4,11 +4,9 @@ import json
 import logging
 import argparse
 
-from data import fullsize_generator
+from data import fullsize_sequence
 from model import load_model
-from util import tensorflow_session
-
-from keras import backend as K
+from util import init_session
 
 
 def model_paths(input_dir):
@@ -31,11 +29,11 @@ def select_best_psnr(psnr_dict):
 
 
 def evaluate_model(model_path, generator):
-    """Evaluate model against DIV2K benchmark and return PSNR"""
+    """Evaluate model with DIV2K benchmark and return PSNR"""
     logging.info('Load model %s', model_path)
     model = load_model(model_path)
 
-    logging.info('Evaluate model ...')
+    logging.info('Evaluate model %s', model_path)
     return model.evaluate_generator(generator, steps=100, verbose=1)[1]
 
 
@@ -53,10 +51,9 @@ def main(args):
     mps = model_paths(args.indir)
 
     if mps:
-        generator = fullsize_generator(args.dataset, subset='valid', downgrade=args.downgrade, scale=args.scale)
+        generator = fullsize_sequence(args.dataset, scale=args.scale, subset='valid', downgrade=args.downgrade)
         psnr_dict = {}
         for mp in mps:
-            reset(args.gpu_memory_fraction)
             psnr = evaluate_model(mp, generator)
             logging.info('PSNR = %.4f for model %s', psnr, mp)
             psnr_dict[mp] = psnr
@@ -71,16 +68,11 @@ def main(args):
         logging.warning('No models found in %s', args.indir)
 
 
-def reset(gpu_memory_fraction):
-    K.clear_session()
-    K.tensorflow_backend.set_session(tensorflow_session(gpu_memory_fraction=gpu_memory_fraction))
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='DIV2K benchmark')
 
     parser.add_argument('-d', '--dataset', type=str, default='./dataset',
-                        help='path to DIV2K dataset')
+                        help='path to DIV2K dataset with images stored as numpy arrays')
     parser.add_argument('-i', '--indir', type=str,
                         help='path to models directory')
     parser.add_argument('-o', '--outfile', type=str, default='./bench.json',
@@ -92,4 +84,7 @@ if __name__ == '__main__':
     parser.add_argument('--gpu-memory-fraction', type=float, default=0.8,
                         help='fraction of GPU memory to allocate')
 
-    main(parser.parse_args())
+    args = parser.parse_args()
+
+    init_session(args.gpu_memory_fraction)
+    main(args)

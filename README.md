@@ -154,10 +154,11 @@ the DIV2K validation set.
 
 ## DIV2K dataset
 
+### Download
+
 If you want to [train](#training) and [evaluate](#evaluation) models, you must download the 
 [DIV2K dataset](https://data.vision.ee.ethz.ch/cvl/DIV2K/) and extract the downloaded archives to a directory of your 
-choice (`DIV2K` in the following example). You'll later refer to this directory with the `--dataset` command line option. 
-The resulting directory structure should look like:
+choice (`DIV2K` in the following example). The resulting directory structure should look like:
   
     DIV2K
       DIV2K_train_HR
@@ -176,14 +177,24 @@ The resulting directory structure should look like:
           ...
           
 You only need to download DIV2K archives for those downgrade operators (unknown, bicubic) and super-resolution scales
-(x2, x3, x4) that you'll actually use for training.
+(x2, x3, x4) that you'll actually use for training. 
+
+### Convert
+
+Before the DIV2K images can be used they must be converted to numpy arrays and stored in a separate location. Conversion 
+to numpy arrays dramatically reduces image loading times. Conversion can be done with the `convert.py` script: 
+
+    python convert.py -i ./DIV2K -o ./DIV2K_BIN
+
+In this example, converted images are written to the `DIV2K_BIN` directory. You'll later refer to this directory with the `--dataset` 
+command line option. 
 
 ## Training
 
 WDSR and EDSR models can be trained by running `train.py` with the command line options and profiles described in 
 [`args.py`](args.py). For example, a WDSR-B baseline model with 8 residual blocks can be trained for scale x2 with
 
-    python train.py --dataset ./DIV2K --outdir ./output --profile wdsr-b-8 --scale 2
+    python train.py --dataset ./DIV2K_BIN --outdir ./output --profile wdsr-b-8 --scale 2
     
 The `--dataset` option sets the location of the DIV2K dataset and the `--output` option the output directory (defaults
 to `./output`). Each training run creates a timestamped sub-directory in the specified output directory which contains 
@@ -201,7 +212,7 @@ for smaller models. Alternatively, you can benchmark saved models later with `be
 To train models for higher scales (x3 or x4) it is recommended to re-use the weights of a model pre-trained for a 
 smaller scale (x2). This can be done with the `--pretrained-model` option. For example,
 
-    python train.py --dataset ./DIV2K --outdir ./output --profile wdsr-b-8 --scale 4 \ 
+    python train.py --dataset ./DIV2K_BIN --outdir ./output --profile wdsr-b-8 --scale 4 \ 
         --pretrained-model ./output/20181016-063620/models/epoch-294-psnr-34.5394.h5
 
 trains a WDSR-B baseline model with 8 residual blocks for scale x4 re-using the weights of model 

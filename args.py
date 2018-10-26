@@ -118,7 +118,7 @@ parser.add_argument('-o', '--outdir', type=str, default='./output',
 # --------------
 
 parser.add_argument('-d', '--dataset', type=str, default='./dataset',
-                    help='path to DIV2K dataset')
+                    help='path to DIV2K dataset with images stored as numpy arrays')
 parser.add_argument('-s', '--scale', type=int, default=2, choices=[2, 3, 4],
                     help='super-resolution scale')
 parser.add_argument('--downgrade', type=str, default='bicubic', choices=['bicubic', 'unknown'],
@@ -169,8 +169,10 @@ parser.add_argument('--save-best-models-only', action='store_true',
                     help='save only models with improved validation psnr (overridden by --benchmark)')
 parser.add_argument('--benchmark', action='store_true',
                     help='run DIV2K benchmark after each epoch and save best models only')
-parser.add_argument('--no-image-cache', action='store_true',
-                    help='do not cache training and validation images in memory (very slow)')
+parser.add_argument('--num-workers', type=int, default=2,
+                    help='number of data loading workers')
+parser.add_argument('--max-queue-size', type=int, default=16,
+                    help='maximum size for generator queue')
 parser.add_argument('--print-model-summary', action='store_true',
                     help='print model summary before training')
 

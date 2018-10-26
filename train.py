@@ -7,10 +7,10 @@ import numpy as np
 import tensorflow as tf
 
 from args import parser, set_profile
-from data import fullsize_generator, random_generator
+from data import cropped_sequence, fullsize_sequence
 from model import edsr, wdsr, copy_weights
 from optimizer import weightnorm as wn
-from util import tensorflow_session
+from util import init_session
 
 from keras import backend as K
 from keras.callbacks import LearningRateScheduler, ModelCheckpoint, TensorBoard
@@ -102,26 +102,23 @@ def _load_model(path):
 
 
 def main(args):
-    logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
-
     train_dir, models_dir = create_train_workspace(args.outdir)
     write_args(train_dir, args)
     logging.info('Training workspace is %s', train_dir)
 
-    cache_images = not args.no_image_cache
-    training_generator = random_generator(args.dataset, subset='train', downgrade=args.downgrade, scale=args.scale,
-                                          batch_size=args.batch_size, cache_images=cache_images, image_ids=args.training_images)
+    training_generator = cropped_sequence(args.dataset, scale=args.scale, subset='train', downgrade=args.downgrade,
+                                          image_ids=args.training_images, batch_size=args.batch_size)
 
     if args.benchmark:
-        logging.info('Validation against DIV2K benchmark')
+        logging.info('Validation with DIV2K benchmark')
         validation_steps = len(args.validation_images)
-        validation_generator = fullsize_generator(args.dataset, subset='valid', downgrade=args.downgrade, scale=args.scale,
-                                                  cache_images=cache_images, image_ids=args.validation_images)
+        validation_generator = fullsize_sequence(args.dataset, scale=args.scale, subset='valid', downgrade=args.downgrade,
+                                                 image_ids=args.validation_images)
     else:
-        logging.info('Validation against randomly cropped images from DIV2K validation set')
+        logging.info('Validation with randomly cropped images from DIV2K validation set')
         validation_steps = args.validation_steps
-        validation_generator = random_generator(args.dataset, subset='valid', downgrade=args.downgrade, scale=args.scale,
-                                                batch_size=args.batch_size, cache_images=cache_images, image_ids=args.validation_images)
+        validation_generator = cropped_sequence(args.dataset, scale=args.scale, subset='valid', downgrade=args.downgrade,
+                                                image_ids=args.validation_images, batch_size=args.batch_size)
 
     if args.model == "edsr":
         loss = mean_absolute_error
@@ -166,16 +163,19 @@ def main(args):
                                   steps_per_epoch=args.steps_per_epoch,
                                   validation_data=validation_generator,
                                   validation_steps=validation_steps,
+                                  use_multiprocessing=True,
+                                  max_queue_size=args.max_queue_size,
+                                  workers=args.num_workers,
                                   callbacks=callbacks)
 
     write_history(train_dir, history.history)
 
 
 if __name__ == '__main__':
+    logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+
     args = parser.parse_args()
     set_profile(args)
 
-    sess = tensorflow_session(gpu_memory_fraction=args.gpu_memory_fraction)
-    K.tensorflow_backend.set_session(sess)
-
+    init_session(args.gpu_memory_fraction)
     main(args)
