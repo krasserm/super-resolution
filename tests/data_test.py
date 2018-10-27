@@ -55,16 +55,16 @@ def assert_bicubic_downscale(sequence, bound=20):
             assert_bicubic_downscale_1(lr, hr, bound)
 
 
-def assert_bicubic_downscale_1(lr, hr, bound):
+def assert_bicubic_downscale_1(lr, hr, max_diff=2, min_frac=0.97):
     """
-    Assert that the pixel-wise value difference between an lr
-    image and a bicubic downscaled hr image is within bound.
+    Asserts that the pixel-wise value difference between an lr image and a bicubic downscaled hr
+    image is less than or equal `max_diff` for at least the given fraction (`min_frac`) of pixels.
     """
 
-    hr_img = Image.fromarray(hr)
-    ds_img = hr_img.resize((lr.shape[1], lr.shape[0]), resample=Image.BICUBIC)
+    ds = Image.fromarray(hr).resize((lr.shape[1], lr.shape[0]), resample=Image.BICUBIC)
+    ds = np.array(ds, dtype='int16')
 
     lr = lr.astype('int16')
-    ds = np.array(ds_img, dtype='int16')
+    diff = np.abs(lr - ds)
 
-    assert np.max(lr - ds) <= bound
+    assert np.sum(diff < 3) / np.size(lr) >= min_frac
