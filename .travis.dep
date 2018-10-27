@@ -1,0 +1,5 @@
+tensorflow
+keras
+tqdm
+Pillow
+pytest
