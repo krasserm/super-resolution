@@ -9,6 +9,8 @@ from util import load_image, init_session
 
 from PIL import Image
 
+logger = logging.getLogger(__name__)
+
 
 def image_paths(path):
     jpgs = glob.glob(os.path.join(path, '*.jpg'), recursive=True)
@@ -34,19 +36,19 @@ def main(args):
     Super-resolve all *.jpg and *.png images in a user-defined directory.
     """
 
-    logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
     os.makedirs(args.outdir, exist_ok=True)
-
     model = load_model(args.model)
 
     for path in image_paths(args.indir):
-        logging.info('Super-resolve image %s', path)
+        logger.info('Super-resolve image %s', path)
         lr = load_image(path)
         sr = resolve(model, lr)
         sr.save(os.path.join(args.outdir, resolved_name(path)))
 
 
 if __name__ == '__main__':
+    logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+
     parser = argparse.ArgumentParser(description='DIV2K benchmark')
 
     parser.add_argument('-i', '--indir', type=str, default='./demo',

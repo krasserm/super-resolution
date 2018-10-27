@@ -198,7 +198,7 @@ command line option.
 ## Training
 
 WDSR and EDSR models can be trained by running `train.py` with the command line options and profiles described in 
-[`args.py`](args.py). For example, a WDSR-B baseline model with 8 residual blocks can be trained for scale x2 with
+[`train.py`](train.py). For example, a WDSR-B baseline model with 8 residual blocks can be trained for scale x2 with
 
     python train.py --dataset ./DIV2K_BIN --outdir ./output --profile wdsr-b-8 --scale 2
     
@@ -224,7 +224,7 @@ smaller scale (x2). This can be done with the `--pretrained-model` option. For e
 trains a WDSR-B baseline model with 8 residual blocks for scale x4 re-using the weights of model 
 `epoch-294-psnr-34.5394.h5`, a WDSR-B baseline model with the same number of residual blocks trained for scale x2. 
 
-For a more detailed overview of available command line options and profiles please take a look at [`args.py`](args.py).
+For a more detailed overview of available command line options and profiles please take a look at [`train.py`](train.py).
 
 ## Evaluation
 
