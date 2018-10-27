@@ -46,9 +46,7 @@ def main(args):
         sr.save(os.path.join(args.outdir, resolved_name(path)))
 
 
-if __name__ == '__main__':
-    logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
-
+def parser():
     parser = argparse.ArgumentParser(description='DIV2K benchmark')
 
     parser.add_argument('-i', '--indir', type=str, default='./demo',
@@ -60,7 +58,13 @@ if __name__ == '__main__':
     parser.add_argument('--gpu-memory-fraction', type=float, default=0.8,
                         help='fraction of GPU memory to allocate')
 
-    args = parser.parse_args()
+    return parser
+
+
+if __name__ == '__main__':
+    logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+
+    args = parser().parse_args()
 
     init_session(args.gpu_memory_fraction)
     main(args)

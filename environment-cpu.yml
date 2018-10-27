@@ -1,6 +1,7 @@
 name: wdsr
 dependencies:
 - python=3.6
+- pytest
 - keras
 - tqdm
 - Pillow

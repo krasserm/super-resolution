@@ -245,6 +245,12 @@ The higher PSNR value in the model filename must not be confused with the value 
 in the filename was generated during training by validating against smaller, randomly cropped images which tends to yield
 higher PSNR values.
 
+## Tests
+
+The test suite can be run with 
+
+    pytest tests
+    
 ## Other implementations
 
 - [Official PyTorch implementation of the WDSR paper](https://github.com/JiahuiYu/wdsr_ntire2018) 

@@ -36,7 +36,7 @@ def main(args):
     images_to_numpy(args.indir, args.outdir)
 
 
-if __name__ == '__main__':
+def parser():
     parser = argparse.ArgumentParser(description='DIV2K image to numpy converter')
 
     parser.add_argument('-i', '--indir', type=str, required=True,
@@ -44,4 +44,8 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--outdir', type=str, required=True,
                         help='directory where converted image files are stored')
 
-    main(parser.parse_args())
+    return parser
+
+
+if __name__ == '__main__':
+    main(parser().parse_args())
