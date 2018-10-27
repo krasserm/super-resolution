@@ -135,7 +135,7 @@ def main(args):
                          res_block_expansion = args.res_expansion,
                          res_block_scaling=args.res_scaling)
 
-    if args.optimizer == 'adam-weightnorm':
+    if args.weightnorm:
         model.compile(optimizer=wn.AdamWithWeightnorm(lr=args.learning_rate), loss=loss, metrics=[psnr])
         if args.num_init_batches > 0:
             logging.info('Data-based initialization of weights with %d batches', args.num_init_batches)

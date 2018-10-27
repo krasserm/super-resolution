@@ -18,7 +18,7 @@ def set_profile(args):
     # WDSR-B baseline (as described in WDSR paper and implemented in https://github.com/JiahuiYu/wdsr_ntire2018)
     if args.profile == 'wdsr-b-8':
         args.model = 'wdsr-b'
-        args.optimizer = 'adam-weightnorm'
+        args.weightnorm = True
         args.learning_rate = 1e-3
         args.num_filters = 32
         args.num_res_blocks = 8
@@ -27,7 +27,7 @@ def set_profile(args):
     # WDSR-B baseline (modified to 16 residual blocks)
     elif args.profile == 'wdsr-b-16':
         args.model = 'wdsr-b'
-        args.optimizer = 'adam-weightnorm'
+        args.weightnorm = True
         args.learning_rate = 1e-3
         args.num_filters = 32
         args.num_res_blocks = 16
@@ -36,7 +36,7 @@ def set_profile(args):
     # WDSR-B baseline (modified to 32 residual blocks)
     elif args.profile == 'wdsr-b-32':
         args.model = 'wdsr-b'
-        args.optimizer = 'adam-weightnorm'
+        args.weightnorm = True
         args.learning_rate = 1e-3
         args.num_filters = 32
         args.num_res_blocks = 32
@@ -49,7 +49,7 @@ def set_profile(args):
     # WDSR-A baseline (as described in WDSR paper and implemented in https://github.com/JiahuiYu/wdsr_ntire2018)
     elif args.profile == 'wdsr-a-8':
         args.model = 'wdsr-a'
-        args.optimizer = 'adam-weightnorm'
+        args.weightnorm = True
         args.learning_rate = 1e-3
         args.num_filters = 32
         args.num_res_blocks = 8
@@ -58,7 +58,7 @@ def set_profile(args):
     # WDSR-A baseline (modified to 16 residual blocks)
     elif args.profile == 'wdsr-a-16':
         args.model = 'wdsr-a'
-        args.optimizer = 'adam-weightnorm'
+        args.weightnorm = True
         args.learning_rate = 1e-3
         args.num_filters = 32
         args.num_res_blocks = 16
@@ -67,7 +67,7 @@ def set_profile(args):
     # WDSR-A baseline (modified to 32 residual blocks)
     elif args.profile == 'wdsr-a-32':
         args.model = 'wdsr-a'
-        args.optimizer = 'adam-weightnorm'
+        args.weightnorm = True
         args.learning_rate = 1e-3
         args.num_filters = 32
         args.num_res_blocks = 32
@@ -80,7 +80,6 @@ def set_profile(args):
     # EDSR baseline (low-level)
     elif args.profile == 'edsr-8':
         args.model = 'edsr'
-        args.optimizer = 'adam'
         args.learning_rate = 1e-4
         args.num_filters = 64
         args.num_res_blocks = 8
@@ -88,7 +87,6 @@ def set_profile(args):
     # EDSR baseline (as described in EDSR paper)
     elif args.profile == 'edsr-16':
         args.model = 'edsr'
-        args.optimizer = 'adam'
         args.learning_rate = 1e-4
         args.num_filters = 64
         args.num_res_blocks = 16
@@ -96,7 +94,6 @@ def set_profile(args):
     # EDSR (as described in EDSR paper)
     elif args.profile == 'edsr':
         args.model = 'edsr'
-        args.optimizer = 'adam'
         args.learning_rate = 1e-4
         args.num_filters = 256
         args.num_res_blocks = 32
@@ -159,8 +156,8 @@ parser.add_argument('--learning-rate-step-size', type=int, default=200,
                     help='learning rate step size in epochs')
 parser.add_argument('--learning-rate-decay', type=float, default=0.5,
                     help='learning rate decay at each step')
-parser.add_argument('--optimizer', type=str, default='adam-weightnorm', choices=['adam', 'adam-weightnorm'],
-                    help='optimizer to use')
+parser.add_argument('--weightnorm', action='store_true',
+                    help='use weight normalization for training')
 parser.add_argument('--num-init-batches', type=int, default=0,
                     help='number of mini-batches for data-based weight initialization (adam-weightnorm optimizer only)')
 parser.add_argument('--pretrained-model', type=str,
