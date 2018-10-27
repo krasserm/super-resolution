@@ -48,7 +48,7 @@ def test_bicubic_downscale_cropped(conversion):
     assert_bicubic_downscale(cropped_sequence())
 
 
-def assert_bicubic_downscale(sequence, bound=12):
+def assert_bicubic_downscale(sequence, bound=20):
     for i in range(len(sequence)):
         lr_batch, hr_batch = sequence[i]
         for lr, hr in zip(lr_batch, hr_batch):
