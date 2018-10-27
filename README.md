@@ -9,13 +9,19 @@ A [Keras](https://keras.io/)-based implementation of
 
 ## Setup
 
-This project requires Python 3.6 or higher.
+Create a new [Conda](https://conda.io) environment with 
 
-1. Create a new [virtual environment](https://docs.python.org/3/tutorial/venv.html) or 
-   [conda environment](https://conda.io/docs/user-guide/tasks/manage-environments.html) and activate that environment.
+    conda env create -f environment-gpu.yml
+    
+if you have a GPU. A CPU-only environment can be created with
 
-2. Run `pip install -r requirements-gpu.txt` if you have a GPU or `pip install -r requirements-cpu.txt` otherwise.
+    conda env create -f environment-cpu.yml
 
+Activate the environment with
+
+    source activate wdsr
+    
+and you are ready to use this project.
 
 ## Pre-trained models
 
