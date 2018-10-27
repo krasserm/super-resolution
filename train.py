@@ -223,9 +223,9 @@ def parser():
     parser.add_argument('--learning-rate-decay', type=float, default=0.5,
                         help='learning rate decay at each step')
     parser.add_argument('--weightnorm', action='store_true',
-                        help='use weight normalization for training')
+                        help='train with weight normalization')
     parser.add_argument('--num-init-batches', type=int, default=0,
-                        help='number of mini-batches for data-based weight initialization (adam-weightnorm optimizer only)')
+                        help='number of mini-batches for data-based weight initialization when using --weightnorm')
     parser.add_argument('--pretrained-model', type=str,
                         help='path to pre-trained model used for weight initialization')
     parser.add_argument('--save-best-models-only', action='store_true',
