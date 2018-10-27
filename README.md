@@ -1,3 +1,5 @@
+![Travis CI](https://travis-ci.com/krasserm/wdsr.svg?branch=master)
+
 # Single Image Super-Resolution with WDSR and EDSR
 
 A [Keras](https://keras.io/)-based implementation of
