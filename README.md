@@ -13,7 +13,7 @@ Create a new [Conda](https://conda.io) environment with
 
     conda env create -f environment-gpu.yml
     
-if you have a GPU. A CPU-only environment can be created with
+if you have a GPU<sup>*)</sup>. A CPU-only environment can be created with
 
     conda env create -f environment-cpu.yml
 
@@ -21,8 +21,10 @@ Activate the environment with
 
     source activate wdsr
     
-and you are ready to use this project.
-
+<sup>*)</sup> It is assumed that appropriate [CUDA](https://developer.nvidia.com/cuda-toolkit) and 
+[cuDNN](https://developer.nvidia.com/cudnn) versions for the current [tensorflow-gpu](https://www.tensorflow.org/install/gpu) 
+version are already installed on your system.
+    
 ## Pre-trained models
 
 Pre-trained models are available [here](https://drive.google.com/drive/folders/13YjKmP5O8NK_E_dFlK-34Okn1IIM9c58). 
