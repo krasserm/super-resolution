@@ -148,13 +148,13 @@ It has only 8 residual blocks instead of 16.
 
 ## Demo
 
-The example in this section super-resolves images in directory [`./demo`](demo) with factor x4 using the downloaded 
-[wdsr-b-32-x4]() model and writes the 
-results to directory `./output`:
+First, download the [wdsr-b-32-x4](https://drive.google.com/open?id=1ZTIz1YVXFTI2z3rvBfVuBSthJLJZivxC) model. Assuming 
+that the path to the downloaded model is `~/Downloads/wdsr-b-32-x4-psnr-29.1736.h5`, the following command super-resolves
+images in directory [`./demo`](demo) with factor x4 and writes the results to directory `./output`:
 
-    python demo.py -i ./demo -o ./output --model=./wdsr-b-32-x4-psnr-29.1736.h5
+    python demo.py -i ./demo -o ./output --model ~/Downloads/wdsr-b-32-x4-psnr-29.1736.h5
     
-The following figures compare the super-resolution results (SR) with the corresponding low-resolution (LR) and 
+Below are figures that compare the super-resolution results (SR) with the corresponding low-resolution (LR) and 
 high-resolution (HR) images and an x4 resize with bicubic interpolation. The demo images were cropped from images in 
 the DIV2K validation set. 
 
