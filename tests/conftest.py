@@ -12,7 +12,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = ''
 @pytest.fixture(scope="session")
 def conversion():
     args = convert.parser().parse_args(['-i', IMG_PATH,
-                                        '-o', ARR_PATH])
+                                        '-o', ARR_PATH, 'numpy'])
 
     # Convert images to numpy arrays
     convert.main(args)
