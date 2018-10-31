@@ -4,7 +4,7 @@ import json
 import logging
 import argparse
 
-from data import fullsize_sequence
+from data import fullsize_sequence, DOWNGRADES
 from model import load_model
 from util import init_session
 
@@ -79,7 +79,7 @@ def parser():
                         help='output JSON file')
     parser.add_argument('-s', '--scale', type=int, default=2, choices=[2, 3, 4],
                         help='super-resolution scale')
-    parser.add_argument('--downgrade', type=str, default='bicubic', choices=['bicubic', 'unknown'],
+    parser.add_argument('--downgrade', type=str, default='bicubic', choices=DOWNGRADES,
                         help='downgrade operation')
     parser.add_argument('--gpu-memory-fraction', type=float, default=0.8,
                         help='fraction of GPU memory to allocate')

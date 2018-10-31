@@ -194,11 +194,27 @@ You only need to download DIV2K archives for those downgrade operators (unknown,
 Before the DIV2K images can be used they must be converted to numpy arrays and stored in a separate location. Conversion 
 to numpy arrays dramatically reduces image loading times. Conversion can be done with the `convert.py` script: 
 
-    python convert.py -i ./DIV2K -o ./DIV2K_BIN
+    python convert.py -i ./DIV2K -o ./DIV2K_BIN numpy
 
 In this example, converted images are written to the `DIV2K_BIN` directory. You'll later refer to this directory with the `--dataset` 
 command line option. 
 
+### JPEG compression
+
+There is experimental support for adding JPEG compression artifacts to LR images and training with these images. The 
+following commands convert bicubic downscaled DIV2K training and validation images to JPEG images with quality `75`:
+
+    python convert.py -i ./DIV2K/DIV2K_train_LR_bicubic \
+                      -o ./DIV2K/DIV2K_train_LR_bicubic_jpeg_75 \
+                       --jpeg-quality 75 jpeg
+
+    python convert.py -i ./DIV2K/DIV2K_valid_LR_bicubic \
+                      -o ./DIV2K/DIV2K_valid_LR_bicubic_jpeg_75 \
+                       --jpeg-quality 75 jpeg
+
+After having converted these JPEG images to numpy array, as described in the previous section, models can be trained
+with the `--downgrade bicubic_jpeg_75` option to additionally learn to recover from JPEG compression artifacts.
+ 
 ## Training
 
 WDSR and EDSR models can be trained by running `train.py` with the command line options and profiles described in 

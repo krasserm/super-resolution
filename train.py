@@ -6,7 +6,7 @@ import argparse
 import numpy as np
 import tensorflow as tf
 
-from data import cropped_sequence, fullsize_sequence
+from data import cropped_sequence, fullsize_sequence, DOWNGRADES
 from model import edsr, wdsr, copy_weights
 from optimizer import weightnorm as wn
 from util import init_session
@@ -116,32 +116,37 @@ def main(args):
         validation_generator = cropped_sequence(args.dataset, scale=args.scale, subset='valid', downgrade=args.downgrade,
                                                 image_ids=args.validation_images, batch_size=args.batch_size)
 
-    if args.model == "edsr":
-        loss = mean_absolute_error
-        model = edsr.edsr(scale=args.scale,
-                          num_filters=args.num_filters,
-                          num_res_blocks=args.num_res_blocks,
-                          res_block_scaling=args.res_scaling)
-    else:
-        loss = mae
-        model_fn = wdsr.wdsr_b if args.model == 'wdsr_b' else wdsr.wdsr_a
-        model = model_fn(scale=args.scale,
-                         num_filters=args.num_filters,
-                         num_res_blocks=args.num_res_blocks,
-                         res_block_expansion = args.res_expansion,
-                         res_block_scaling=args.res_scaling)
+    if args.initial_epoch:
+        logger.info('Resume training of model %s', args.pretrained_model)
+        model = _load_model(args.pretrained_model)
 
-    if args.weightnorm:
-        model.compile(optimizer=wn.AdamWithWeightnorm(lr=args.learning_rate), loss=loss, metrics=[psnr])
-        if args.num_init_batches > 0:
-            logger.info('Data-based initialization of weights with %d batches', args.num_init_batches)
-            model_weightnorm_init(model, training_generator, args.num_init_batches)
     else:
-        model.compile(optimizer=Adam(lr=args.learning_rate), loss=loss, metrics=[psnr])
+        if args.model == "edsr":
+            loss = mean_absolute_error
+            model = edsr.edsr(scale=args.scale,
+                              num_filters=args.num_filters,
+                              num_res_blocks=args.num_res_blocks,
+                              res_block_scaling=args.res_scaling)
+        else:
+            loss = mae
+            model_fn = wdsr.wdsr_b if args.model == 'wdsr_b' else wdsr.wdsr_a
+            model = model_fn(scale=args.scale,
+                             num_filters=args.num_filters,
+                             num_res_blocks=args.num_res_blocks,
+                             res_block_expansion = args.res_expansion,
+                             res_block_scaling=args.res_scaling)
 
-    if args.pretrained_model:
-        logger.info('Initialization with weights from pre-trained model %s', args.pretrained_model)
-        copy_weights(from_model=_load_model(args.pretrained_model), to_model=model)
+        if args.weightnorm:
+            model.compile(optimizer=wn.AdamWithWeightnorm(lr=args.learning_rate), loss=loss, metrics=[psnr])
+            if args.num_init_batches > 0:
+                logger.info('Data-based initialization of weights with %d batches', args.num_init_batches)
+                model_weightnorm_init(model, training_generator, args.num_init_batches)
+        else:
+            model.compile(optimizer=Adam(lr=args.learning_rate), loss=loss, metrics=[psnr])
+
+        if args.pretrained_model:
+            logger.info('Initialization with weights from pre-trained model %s', args.pretrained_model)
+            copy_weights(from_model=_load_model(args.pretrained_model), to_model=model)
 
     if args.print_model_summary:
         model.summary()
@@ -156,10 +161,11 @@ def main(args):
 
     model.fit_generator(training_generator,
                         epochs=args.epochs,
+                        initial_epoch=args.initial_epoch,
                         steps_per_epoch=args.steps_per_epoch,
                         validation_data=validation_generator,
                         validation_steps=validation_steps,
-                        use_multiprocessing=True,
+                        use_multiprocessing=args.use_multiprocessing,
                         max_queue_size=args.max_queue_size,
                         workers=args.num_workers,
                         callbacks=callbacks)
@@ -184,7 +190,7 @@ def parser():
                         help='path to DIV2K dataset with images stored as numpy arrays')
     parser.add_argument('-s', '--scale', type=int, default=2, choices=[2, 3, 4],
                         help='super-resolution scale')
-    parser.add_argument('--downgrade', type=str, default='bicubic', choices=['bicubic', 'unknown'],
+    parser.add_argument('--downgrade', type=str, default='bicubic', choices=DOWNGRADES,
                         help='downgrade operation')
     parser.add_argument('--training-images', type=int_range, default='1-800',
                         help='training image ids')
@@ -227,12 +233,16 @@ def parser():
     parser.add_argument('--num-init-batches', type=int, default=0,
                         help='number of mini-batches for data-based weight initialization when using --weightnorm')
     parser.add_argument('--pretrained-model', type=str,
-                        help='path to pre-trained model used for weight initialization')
+                        help='path to pre-trained model')
     parser.add_argument('--save-best-models-only', action='store_true',
                         help='save only models with improved validation psnr (overridden by --benchmark)')
     parser.add_argument('--benchmark', action='store_true',
                         help='run DIV2K benchmark after each epoch and save best models only')
-    parser.add_argument('--num-workers', type=int, default=2,
+    parser.add_argument('--initial-epoch', type=int, default=0,
+                        help='resumes training of provided model if greater than 0')
+    parser.add_argument('--use-multiprocessing', action='store_true',
+                        help='use multi-processing for data loading')
+    parser.add_argument('--num-workers', type=int, default=1,
                         help='number of data loading workers')
     parser.add_argument('--max-queue-size', type=int, default=16,
                         help='maximum size for generator queue')

@@ -3,6 +3,8 @@ import numpy as np
 
 from keras.utils.data_utils import Sequence
 
+DOWNGRADES = ['bicubic', 'bicubic_jpeg_75', 'unknown']
+
 
 class DIV2KSequence(Sequence):
     def __init__(self,
@@ -24,7 +26,7 @@ class DIV2KSequence(Sequence):
         :param path: path to DIV2K dataset with images stored as numpy arrays.
         :param scale: super resolution scale, either 2, 3 or 4.
         :param subset:  either 'train' or 'valid', referring to training and validation subset, respectively.
-        :param downgrade: downgrade operator, either 'bicubic' or 'unknown'.
+        :param downgrade: downgrade operator, see DOWNGRADES.
         :param image_ids: list of image ids to use from the specified subset. Default is None which means
                           all image ids from the specified subset.
         :param random_rotate: if True images are randomly rotated by 0, 90, 180 or 270 degrees.
@@ -40,8 +42,8 @@ class DIV2KSequence(Sequence):
             raise ValueError('scale must be 2, 3 or 4')
         if subset not in ['train', 'valid']:
             raise ValueError("subset must be 'train' or 'valid'")
-        if downgrade not in ['bicubic', 'unknown']:
-            raise ValueError("downgrade must be 'bicubic' or 'unknown'")
+        if downgrade not in DOWNGRADES:
+            raise ValueError(f"downgrade must be in {DOWNGRADES}")
         if not random_crop and batch_size != 1:
             raise ValueError('batch_size must be 1 if random_crop=False')
 
