@@ -3,7 +3,7 @@ import numpy as np
 
 from keras.utils.data_utils import Sequence
 
-DOWNGRADES = ['bicubic', 'bicubic_jpeg_75', 'unknown']
+DOWNGRADES = ['bicubic', 'bicubic_jpeg_75', 'bicubic_jpeg_90', 'unknown']
 
 
 class DIV2KSequence(Sequence):

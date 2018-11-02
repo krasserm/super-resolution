@@ -6,13 +6,13 @@ import argparse
 import numpy as np
 import tensorflow as tf
 
+from callback import learning_rate, model_checkpoint_after, tensor_board
 from data import cropped_sequence, fullsize_sequence, DOWNGRADES
 from model import edsr, wdsr, copy_weights
 from optimizer import weightnorm as wn
 from util import init_session
 
 from keras import backend as K
-from keras.callbacks import LearningRateScheduler, ModelCheckpoint, TensorBoard
 from keras.losses import mean_absolute_error
 from keras.models import load_model
 from keras.optimizers import Adam
@@ -38,25 +38,6 @@ def write_args(path, args):
 def model_weightnorm_init(model, generator, num_batches):
     lr_batches = [lr_batch for lr_batch, _ in itertools.islice(generator, num_batches)]
     wn.data_based_init(model, np.concatenate(lr_batches, axis=0))
-
-
-def model_checkpoint_callback(path, monitor, save_best_only):
-    pattern = os.path.join(path, 'epoch-{epoch:03d}-psnr-{' + monitor + ':.4f}.h5')
-    return ModelCheckpoint(filepath=pattern, monitor=monitor, save_best_only=save_best_only, mode='max')
-
-
-def tensor_board_callback(path):
-    return TensorBoard(log_dir=os.path.join(path, 'log'), write_graph=False)
-
-
-def learning_rate_callback(step_size, decay, verbose=1):
-    def schedule(epoch, lr):
-        if epoch > 0 and epoch % step_size == 0:
-            return lr * decay
-        else:
-            return lr
-
-    return LearningRateScheduler(schedule, verbose=verbose)
 
 
 def mae(hr, sr):
@@ -152,12 +133,10 @@ def main(args):
         model.summary()
 
     callbacks = [
-        tensor_board_callback(train_dir),
-        learning_rate_callback(step_size=args.learning_rate_step_size,
-                               decay=args.learning_rate_decay),
-        model_checkpoint_callback(models_dir,
-                                  monitor='val_psnr',
-                                  save_best_only=args.save_best_models_only or args.benchmark)]
+        tensor_board(train_dir),
+        learning_rate(step_size=args.learning_rate_step_size, decay=args.learning_rate_decay),
+        model_checkpoint_after(args.save_models_after_epoch, models_dir, monitor='val_psnr',
+                               save_best_only=args.save_best_models_only or args.benchmark)]
 
     model.fit_generator(training_generator,
                         epochs=args.epochs,
@@ -236,6 +215,8 @@ def parser():
                         help='path to pre-trained model')
     parser.add_argument('--save-best-models-only', action='store_true',
                         help='save only models with improved validation psnr (overridden by --benchmark)')
+    parser.add_argument('--save-models-after-epoch', type=int, default=0,
+                        help='start saving models only after given epoch')
     parser.add_argument('--benchmark', action='store_true',
                         help='run DIV2K benchmark after each epoch and save best models only')
     parser.add_argument('--initial-epoch', type=int, default=0,
