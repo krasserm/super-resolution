@@ -42,14 +42,14 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
     <tr>
         <th>Model</th>
         <th>Scale</th>
-        <th>Residual<br/>blocks </th>
+        <th>Residual<br/>blocks</th>
         <th>Downgrade</th>
-        <th>Parameters</th>
+        <th>Parameters<sup> 1)</sup></th>
         <th>PSNR</th>
         <th>Training</th>
     </tr>
     <tr>
-        <td><a href="https://drive.google.com/open?id=1V4XHMFZo35yB_NTaD0dyw1_plS-78-Ju">wdsr-b-32-x2</a></td>
+        <td><a href="https://drive.google.com/open?id=1V4XHMFZo35yB_NTaD0dyw1_plS-78-Ju">wdsr-a-32-x2</a></td>
         <td>x2</td>
         <td>32</td>
         <td>bicubic</td>
@@ -58,7 +58,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td><a href="https://drive.google.com/open?id=1UgWCb7sSaKjDZDsZE93HhBEm4Rg7ofpa">settings</a></td>
     </tr>
     <tr>
-        <td><a href="https://drive.google.com/open?id=1ZTIz1YVXFTI2z3rvBfVuBSthJLJZivxC">wdsr-b-32-x4</a></td>
+        <td><a href="https://drive.google.com/open?id=1ZTIz1YVXFTI2z3rvBfVuBSthJLJZivxC">wdsr-a-32-x4</a></td>
         <td>x4</td>
         <td>32</td>
         <td>bicubic</td>
@@ -67,27 +67,24 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td><a href="https://drive.google.com/open?id=1RhmgJkqZ86LEWfA7CAPfqBGhmNQ7Y7k7">settings</a></td>
     </tr>
     <tr>
-        <td><a href="https://drive.google.com/open?id=1XatcgjJM1s7BD_nHr8ApnyMhTEozY8SI">wdsr-b-32-x2-q90</a></td>
+        <td><a href="https://drive.google.com/open?id=1XatcgjJM1s7BD_nHr8ApnyMhTEozY8SI">wdsr-a-32-x2-q90</a></td>
         <td>x2</td>
         <td>32</td>
-        <td>bicubic + JPEG (90)<sup> 1)</sup></td>
+        <td>bicubic + JPEG (90)<sup> 2)</sup></td>
         <td>3.55M</td>
         <td>34.80 dB</td>
         <td><a href="https://drive.google.com/open?id=1mhPWkeUhu6d8LAzoFnI85lobcZSfaui0">settings</a></td>
     </tr>
     <tr>
-        <td><a href="https://drive.google.com/open?id=1YBAPemerjTEA2OpQUP2o9iD9BZXdloJQ">wdsr-b-32-x4-q90</a></td>
+        <td><a href="https://drive.google.com/open?id=1YBAPemerjTEA2OpQUP2o9iD9BZXdloJQ">wdsr-a-32-x4-q90</a></td>
         <td>x4</td>
         <td>32</td>
-        <td>bicubic + JPEG (90)<sup> 1)</sup></td>
+        <td>bicubic + JPEG (90)<sup> 2)</sup></td>
         <td>3.56M</td>
         <td>29.17 dB</td>
         <td><a href="https://drive.google.com/open?id=1J4DZv_OCFDrtD82EidYqhMismGFQIhD6">settings</a></td>
     </tr>
 </table>
-
-<sup>1)</sup> JPEG compression with quality `90` in addition to bicubic downscale. See also section 
-[JPEG compression](#jpeg-compression).
 
 ### Baseline models
 
@@ -95,14 +92,14 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
     <tr>
         <th>Model</th>
         <th>Scale</th>
-        <th>Residual<br/>blocks </th>
+        <th>Residual<br/>blocks</th>
         <th>Downgrade</th>
-        <th>Parameters</th>
+        <th>Parameters<sup> 1)</sup></th>
         <th>PSNR</th>
         <th>Training</th>
     </tr>
     <tr>
-        <td><a href="https://drive.google.com/open?id=1Vr_eLXnNA7H6zNWmEFKOBv4-xvOBt5iu">wdsr-b-8-x2</a><sup> 1)</sup></td>
+        <td><a href="https://drive.google.com/open?id=1Vr_eLXnNA7H6zNWmEFKOBv4-xvOBt5iu">wdsr-a-8-x2</a><sup> 3)</sup></td>
         <td>x2</td>
         <td>8</td>
         <td>bicubic</td>
@@ -111,7 +108,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td><a href="https://drive.google.com/open?id=1VL4i4i1XuMy65wbq8fiWOOfMNziRqmdE">settings</a></td>
     </tr>
     <tr>
-        <td><a href="https://drive.google.com/open?id=1CSdinKy9E3B4dm-lp7O_W-MYXp0GoB9g">wdsr-b-8-x3</a></td>
+        <td><a href="https://drive.google.com/open?id=1CSdinKy9E3B4dm-lp7O_W-MYXp0GoB9g">wdsr-a-8-x3</a></td>
         <td>x3</td>
         <td>8</td>
         <td>bicubic</td>
@@ -120,7 +117,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td><a href="https://drive.google.com/open?id=1B2w-ZSlD96RkCQ5C_JbQEDrdIMez7y3D">settings</a></td>
     </tr>
     <tr>
-        <td><a href="https://drive.google.com/open?id=1WCpIY9G-9fL9cTa3We9ry3hm-ePT58b_">wdsr-b-8-x4</a></td>
+        <td><a href="https://drive.google.com/open?id=1WCpIY9G-9fL9cTa3We9ry3hm-ePT58b_">wdsr-a-8-x4</a></td>
         <td>x4</td>
         <td>8</td>
         <td>bicubic</td>
@@ -129,25 +126,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td><a href="https://drive.google.com/open?id=1jgQfwGR_HVqVUjQqkvHCDhHowvTBmP5_">settings</a></td>
     </tr>
     <tr>
-        <td>wdsr-a-16-x2</a><sup> 2)</sup></td>
-        <td>x2</td>
-        <td>16</td>
-        <td>bicubic</td>
-        <td>1.19M</td>
-        <td>34.77 dB</td>
-        <td>settings</td>
-    </tr>
-    <tr>
-        <td><a href="https://drive.google.com/open?id=1tp7r_oUf8Ohd9q-ouGApS7qNtqg1IRLt">wdsr-a-8-x2</a></td>
-        <td>x2</td>
-        <td>8</td>
-        <td>bicubic</td>
-        <td>0.60M</td>
-        <td>34.47 dB</td>
-        <td><a href="https://drive.google.com/open?id=1hnL23k9_UYvGeAhY2nWOMM1rP2k-t8d-">settings</a></td>
-    </tr>
-    <tr>
-        <td><a href="https://drive.google.com/open?id=1ujCCDTJIheyGW-2wLU96tH13dGMEg84i">edsr-8-x2</a><sup> 3)</sup></td>
+        <td><a href="https://drive.google.com/open?id=1ujCCDTJIheyGW-2wLU96tH13dGMEg84i">edsr-8-x2</a><sup> 4)</sup></td>
         <td>x2</td>
         <td>8</td>
         <td>bicubic</td>
@@ -157,22 +136,26 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
     </tr>
 </table>
 
-<sup>1)</sup> WDSR-B baseline with 8 residual blocks referenced on the [WDSR project page](https://github.com/JiahuiYu/wdsr_ntire2018). 
-Measured PSNRs are identical.
+<sup>1)</sup> For WDSR-A models an expansion ratio of 6 was used, instead of 4, without a decrease in performance. Please 
+note that the default expansion ratio is 4 when using one the of the `wdsr-a-*` profiles with the `--profile` command 
+line option.
 
-<sup>2)</sup> WDSR-A baseline with 16 residual blocks referenced on the [WDSR project page](https://github.com/JiahuiYu/wdsr_ntire2018).
-PSNR is taken from there until a pre-trained model is available here.
+<sup>2)</sup> JPEG compression with quality `90` in addition to bicubic downscale. See also section 
+[JPEG compression](#jpeg-compression).
+
+<sup>3)</sup> WDSR-A baseline with 8 residual blocks referenced on the [WDSR project page](https://github.com/JiahuiYu/wdsr_ntire2018). 
+Measured PSNRs are identical.
 
 <sup>3)</sup> Smaller EDSR baseline model than that referenced on the [EDSR project page](https://github.com/thstkdgus35/EDSR-PyTorch)
 (has only 8 residual blocks instead of 16).
 
 ## Demo
 
-First, download the [wdsr-b-32-x4](https://drive.google.com/open?id=1ZTIz1YVXFTI2z3rvBfVuBSthJLJZivxC) model. Assuming 
-that the path to the downloaded model is `~/Downloads/wdsr-b-32-x4-psnr-29.1736.h5`, the following command super-resolves
+First, download the [wdsr-a-32-x4](https://drive.google.com/open?id=1ZTIz1YVXFTI2z3rvBfVuBSthJLJZivxC) model. Assuming 
+that the path to the downloaded model is `~/Downloads/wdsr-a-32-x4-psnr-29.1736.h5`, the following command super-resolves
 images in directory [`./demo`](demo) with factor x4 and writes the results to directory `./output`:
 
-    python demo.py -i ./demo -o ./output --model ~/Downloads/wdsr-b-32-x4-psnr-29.1736.h5
+    python demo.py -i ./demo -o ./output --model ~/Downloads/wdsr-a-32-x4-psnr-29.1736.h5
     
 Below are figures that compare the super-resolution results (SR) with the corresponding low-resolution (LR) and 
 high-resolution (HR) images and an x4 resize with bicubic interpolation. The demo images were cropped from images in 
@@ -238,9 +221,9 @@ with the `--downgrade bicubic_jpeg_90` option to additionally learn to recover f
 ## Training
 
 WDSR and EDSR models can be trained by running `train.py` with the command line options and profiles described in 
-[`train.py`](train.py). For example, a WDSR-B baseline model with 8 residual blocks can be trained for scale x2 with
+[`train.py`](train.py). For example, a WDSR-A baseline model with 8 residual blocks can be trained for scale x2 with
 
-    python train.py --dataset ./DIV2K_BIN --outdir ./output --profile wdsr-b-8 --scale 2
+    python train.py --dataset ./DIV2K_BIN --outdir ./output --profile wdsr-a-8 --scale 2
     
 The `--dataset` option sets the location of the DIV2K dataset and the `--output` option the output directory (defaults
 to `./output`). Each training run creates a timestamped sub-directory in the specified output directory which contains 
@@ -258,11 +241,11 @@ for smaller models. Alternatively, you can benchmark saved models later with `be
 To train models for higher scales (x3 or x4) it is recommended to re-use the weights of a model pre-trained for a 
 smaller scale (x2). This can be done with the `--pretrained-model` option. For example,
 
-    python train.py --dataset ./DIV2K_BIN --outdir ./output --profile wdsr-b-8 --scale 4 \ 
+    python train.py --dataset ./DIV2K_BIN --outdir ./output --profile wdsr-a-8 --scale 4 \ 
         --pretrained-model ./output/20181016-063620/models/epoch-294-psnr-34.5394.h5
 
-trains a WDSR-B baseline model with 8 residual blocks for scale x4 re-using the weights of model 
-`epoch-294-psnr-34.5394.h5`, a WDSR-B baseline model with the same number of residual blocks trained for scale x2. 
+trains a WDSR-A baseline model with 8 residual blocks for scale x4 re-using the weights of model 
+`epoch-294-psnr-34.5394.h5`, a WDSR-A baseline model with the same number of residual blocks trained for scale x2. 
 
 For a more detailed overview of available command line options and profiles please take a look at [`train.py`](train.py).
 

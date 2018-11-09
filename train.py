@@ -110,7 +110,7 @@ def main(args):
                               res_block_scaling=args.res_scaling)
         else:
             loss = mae
-            model_fn = wdsr.wdsr_b if args.model == 'wdsr_b' else wdsr.wdsr_a
+            model_fn = wdsr.wdsr_b if args.model == 'wdsr-b' else wdsr.wdsr_a
             model = model_fn(scale=args.scale,
                              num_filters=args.num_filters,
                              num_res_blocks=args.num_res_blocks,
