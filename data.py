@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from keras.utils.data_utils import Sequence
+from tensorflow.keras.utils import Sequence
 
 DOWNGRADES = ['bicubic', 'bicubic_jpeg_75', 'bicubic_jpeg_90', 'unknown']
 

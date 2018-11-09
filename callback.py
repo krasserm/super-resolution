@@ -1,6 +1,6 @@
 import os
 
-from keras.callbacks import LearningRateScheduler, ModelCheckpoint, TensorBoard
+from tensorflow.keras.callbacks import LearningRateScheduler, ModelCheckpoint, TensorBoard
 
 
 class ModelCheckpointAfter(ModelCheckpoint):

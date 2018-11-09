@@ -1,21 +1,18 @@
 import os
 import logging
 import datetime
-import itertools
 import argparse
-import numpy as np
 import tensorflow as tf
 
 from callback import learning_rate, model_checkpoint_after, tensor_board
 from data import cropped_sequence, fullsize_sequence, DOWNGRADES
 from model import edsr, wdsr, copy_weights
-from optimizer import weightnorm as wn
 from util import init_session
 
-from keras import backend as K
-from keras.losses import mean_absolute_error
-from keras.models import load_model
-from keras.optimizers import Adam
+from tensorflow.keras import backend as K
+from tensorflow.keras.losses import mean_absolute_error
+from tensorflow.keras.models import load_model
+from tensorflow.keras.optimizers import Adam
 
 logger = logging.getLogger(__name__)
 
@@ -33,11 +30,6 @@ def write_args(path, args):
     with open(os.path.join(path, 'args.txt'), 'w') as f:
         for k, v in sorted(args.__dict__.items()):
             f.write(f'{k}={v}\n')
-
-
-def model_weightnorm_init(model, generator, num_batches):
-    lr_batches = [lr_batch for lr_batch, _ in itertools.islice(generator, num_batches)]
-    wn.data_based_init(model, np.concatenate(lr_batches, axis=0))
 
 
 def mae(hr, sr):
@@ -67,13 +59,6 @@ def _crop_hr_in_training(hr, sr):
 
 def _load_model(path):
     return load_model(path, custom_objects={'tf': tf,
-                                            'AdamWithWeightnorm': wn.AdamWithWeightnorm,
-                                            'mae_scale_2': mae, # backwards-compatibility
-                                            'mae_scale_3': mae, # backwards-compatibility
-                                            'mae_scale_4': mae, # backwards-compatibility
-                                            'psnr_scale_2': psnr, # backwards-compatibility
-                                            'psnr_scale_3': psnr, # backwards-compatibility
-                                            'psnr_scale_4': psnr, # backwards-compatibility
                                             'mae': mae,
                                             'psnr': psnr})
 
@@ -117,13 +102,7 @@ def main(args):
                              res_block_expansion = args.res_expansion,
                              res_block_scaling=args.res_scaling)
 
-        if args.weightnorm:
-            model.compile(optimizer=wn.AdamWithWeightnorm(lr=args.learning_rate), loss=loss, metrics=[psnr])
-            if args.num_init_batches > 0:
-                logger.info('Data-based initialization of weights with %d batches', args.num_init_batches)
-                model_weightnorm_init(model, training_generator, args.num_init_batches)
-        else:
-            model.compile(optimizer=Adam(lr=args.learning_rate), loss=loss, metrics=[psnr])
+        model.compile(optimizer=Adam(lr=args.learning_rate), loss=loss, metrics=[psnr])
 
         if args.pretrained_model:
             logger.info('Initialization with weights from pre-trained model %s', args.pretrained_model)
@@ -207,10 +186,6 @@ def parser():
                         help='learning rate step size in epochs')
     parser.add_argument('--learning-rate-decay', type=float, default=0.5,
                         help='learning rate decay at each step')
-    parser.add_argument('--weightnorm', action='store_true',
-                        help='train with weight normalization')
-    parser.add_argument('--num-init-batches', type=int, default=0,
-                        help='number of mini-batches for data-based weight initialization when using --weightnorm')
     parser.add_argument('--pretrained-model', type=str,
                         help='path to pre-trained model')
     parser.add_argument('--save-best-models-only', action='store_true',

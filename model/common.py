@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
-from keras.layers import Lambda
+from tensorflow.keras.layers import Lambda
 
 DIV2K_RGB_MEAN = np.array([0.4488, 0.4371, 0.4040]) * 255
 
