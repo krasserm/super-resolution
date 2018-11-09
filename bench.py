@@ -5,8 +5,11 @@ import logging
 import argparse
 
 from data import fullsize_sequence, DOWNGRADES
-from model import load_model
+from model import wdsr
 from util import init_session
+from train import mean_absolute_error, psnr
+
+from tensorflow.keras import backend as K
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +36,12 @@ def select_best_psnr(psnr_dict):
 def evaluate_model(model_path, generator):
     """Evaluate model with DIV2K benchmark and return PSNR"""
     logger.info('Load model %s', model_path)
-    model = load_model(model_path)
+
+    # FIXME: make this generic
+    model = wdsr.wdsr_b(2)
+
+    model.load_weights(model_path)
+    model.compile(optimizer='adam', loss=mean_absolute_error, metrics=[psnr])
 
     logger.info('Evaluate model %s', model_path)
     return model.evaluate_generator(generator, steps=100, verbose=1)[1]
@@ -55,6 +63,7 @@ def main(args):
         psnr_dict = {}
         for mp in mps:
             psnr = evaluate_model(mp, generator)
+            K.clear_session()
             logger.info('PSNR = %.4f for model %s', psnr, mp)
             psnr_dict[mp] = psnr
 
