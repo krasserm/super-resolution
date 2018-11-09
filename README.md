@@ -26,7 +26,7 @@ Activate the environment with
 <sup>*)</sup> It is assumed that appropriate [CUDA](https://developer.nvidia.com/cuda-toolkit) and 
 [cuDNN](https://developer.nvidia.com/cudnn) versions for the current [tensorflow-gpu](https://www.tensorflow.org/install/gpu) 
 version are already installed on your system.
-    
+
 ## Pre-trained models
 
 Pre-trained models are available [here](https://drive.google.com/drive/folders/13YjKmP5O8NK_E_dFlK-34Okn1IIM9c58). 
@@ -271,6 +271,16 @@ higher PSNR values.
 The test suite can be run with 
 
     pytest tests
+    
+## Weight normalization
+
+WDSR models are trained with [weight normalization](https://arxiv.org/abs/1602.07868). This branch uses a 
+[modified Adam optimizer](https://github.com/krasserm/wdsr/blob/master/optimizer/weightnorm.py). Branch 
+[wip-conv2d-weight-norm](https://github.com/krasserm/wdsr/tree/wip-conv2d-weight-norm) instead uses a specialized 
+[`Conv2DWeightNorm`](https://github.com/krasserm/wdsr/blob/wip-conv2d-weight-norm/layer.py) layer and a default Adam 
+optimizer (experimental work inspired by the official [WDSR Tensorflow](https://github.com/ychfan/tf_estimator_barebone/blob/master/models/wdsr.py) 
+port). Current plan is to replace this layer with a default `Conv2D` layer and a [Tensorflow WeightNorm wrapper](https://github.com/tensorflow/tensorflow/pull/21276)
+when the wrapper is officially available in a Tensorflow release.
     
 ## Other implementations
 
