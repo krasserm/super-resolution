@@ -72,7 +72,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td>32</td>
         <td>bicubic + JPEG (90)<sup> 2)</sup></td>
         <td>3.55M</td>
-        <td>34.80 dB</td>
+        <td>32.12 dB</td>
         <td><a href="https://drive.google.com/open?id=1mhPWkeUhu6d8LAzoFnI85lobcZSfaui0">settings</a></td>
     </tr>
     <tr>
@@ -81,7 +81,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td>32</td>
         <td>bicubic + JPEG (90)<sup> 2)</sup></td>
         <td>3.56M</td>
-        <td>29.17 dB</td>
+        <td>27.63 dB</td>
         <td><a href="https://drive.google.com/open?id=1J4DZv_OCFDrtD82EidYqhMismGFQIhD6">settings</a></td>
     </tr>
 </table>

@@ -6,7 +6,7 @@ import argparse
 
 from data import fullsize_sequence, DOWNGRADES
 from model import load_model
-from util import init_session
+from util import reset_session
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +54,7 @@ def main(args):
         generator = fullsize_sequence(args.dataset, scale=args.scale, subset='valid', downgrade=args.downgrade)
         psnr_dict = {}
         for mp in mps:
+            reset_session(args.gpu_memory_fraction)
             psnr = evaluate_model(mp, generator)
             logger.info('PSNR = %.4f for model %s', psnr, mp)
             psnr_dict[mp] = psnr
@@ -89,7 +90,4 @@ def parser():
 if __name__ == '__main__':
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
-    args = parser().parse_args()
-
-    init_session(args.gpu_memory_fraction)
-    main(args)
+    main(parser().parse_args())
