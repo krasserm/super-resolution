@@ -36,56 +36,6 @@ in the EDSR paper. Model performance is measured in dB [PSNR](https://en.wikiped
 on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, without self-ensemble). See also section 
 [Training](#training).
 
-### Experimental models
-
-<table>
-    <tr>
-        <th>Model</th>
-        <th>Scale</th>
-        <th>Residual<br/>blocks</th>
-        <th>Downgrade</th>
-        <th>Parameters<sup> 1)</sup></th>
-        <th>PSNR</th>
-        <th>Training</th>
-    </tr>
-    <tr>
-        <td><a href="https://drive.google.com/open?id=1V4XHMFZo35yB_NTaD0dyw1_plS-78-Ju">wdsr-a-32-x2</a></td>
-        <td>x2</td>
-        <td>32</td>
-        <td>bicubic</td>
-        <td>3.55M</td>
-        <td>34.80 dB</td>
-        <td><a href="https://drive.google.com/open?id=1UgWCb7sSaKjDZDsZE93HhBEm4Rg7ofpa">settings</a></td>
-    </tr>
-    <tr>
-        <td><a href="https://drive.google.com/open?id=1ZTIz1YVXFTI2z3rvBfVuBSthJLJZivxC">wdsr-a-32-x4</a></td>
-        <td>x4</td>
-        <td>32</td>
-        <td>bicubic</td>
-        <td>3.56M</td>
-        <td>29.17 dB</td>
-        <td><a href="https://drive.google.com/open?id=1RhmgJkqZ86LEWfA7CAPfqBGhmNQ7Y7k7">settings</a></td>
-    </tr>
-    <tr>
-        <td><a href="https://drive.google.com/open?id=1XatcgjJM1s7BD_nHr8ApnyMhTEozY8SI">wdsr-a-32-x2-q90</a></td>
-        <td>x2</td>
-        <td>32</td>
-        <td>bicubic + JPEG (90)<sup> 2)</sup></td>
-        <td>3.55M</td>
-        <td>32.12 dB</td>
-        <td><a href="https://drive.google.com/open?id=1mhPWkeUhu6d8LAzoFnI85lobcZSfaui0">settings</a></td>
-    </tr>
-    <tr>
-        <td><a href="https://drive.google.com/open?id=1YBAPemerjTEA2OpQUP2o9iD9BZXdloJQ">wdsr-a-32-x4-q90</a></td>
-        <td>x4</td>
-        <td>32</td>
-        <td>bicubic + JPEG (90)<sup> 2)</sup></td>
-        <td>3.56M</td>
-        <td>27.63 dB</td>
-        <td><a href="https://drive.google.com/open?id=1J4DZv_OCFDrtD82EidYqhMismGFQIhD6">settings</a></td>
-    </tr>
-</table>
-
 ### Baseline models
 
 <table>
@@ -94,12 +44,12 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <th>Scale</th>
         <th>Residual<br/>blocks</th>
         <th>Downgrade</th>
-        <th>Parameters<sup> 1)</sup></th>
+        <th>Parameters</th>
         <th>PSNR</th>
         <th>Training</th>
     </tr>
     <tr>
-        <td><a href="https://drive.google.com/open?id=1Vr_eLXnNA7H6zNWmEFKOBv4-xvOBt5iu">wdsr-a-8-x2</a><sup> 3)</sup></td>
+        <td><a href="https://drive.google.com/open?id=1Vr_eLXnNA7H6zNWmEFKOBv4-xvOBt5iu">wdsr-a-8-x2</a><sup> 1)</sup></td>
         <td>x2</td>
         <td>8</td>
         <td>bicubic</td>
@@ -108,46 +58,94 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td><a href="https://drive.google.com/open?id=1VL4i4i1XuMy65wbq8fiWOOfMNziRqmdE">settings</a></td>
     </tr>
     <tr>
-        <td><a href="https://drive.google.com/open?id=1CSdinKy9E3B4dm-lp7O_W-MYXp0GoB9g">wdsr-a-8-x3</a></td>
-        <td>x3</td>
-        <td>8</td>
-        <td>bicubic</td>
-        <td>0.89M</td>
-        <td>30.87 dB</td>
-        <td><a href="https://drive.google.com/open?id=1B2w-ZSlD96RkCQ5C_JbQEDrdIMez7y3D">settings</a></td>
-    </tr>
-    <tr>
-        <td><a href="https://drive.google.com/open?id=1WCpIY9G-9fL9cTa3We9ry3hm-ePT58b_">wdsr-a-8-x4</a></td>
-        <td>x4</td>
-        <td>8</td>
-        <td>bicubic</td>
-        <td>0.90M</td>
-        <td>28.91 dB</td>
-        <td><a href="https://drive.google.com/open?id=1jgQfwGR_HVqVUjQqkvHCDhHowvTBmP5_">settings</a></td>
-    </tr>
-    <tr>
-        <td><a href="https://drive.google.com/open?id=1ujCCDTJIheyGW-2wLU96tH13dGMEg84i">edsr-8-x2</a><sup> 4)</sup></td>
+        <td><a href="https://drive.google.com/open?id=1WmuSpNamFSszQOafrno05o1nDN4QjMeq">wdsr-a-16-x2</a><sup> 1)</sup></td>
         <td>x2</td>
-        <td>8</td>
+        <td>16</td>
         <td>bicubic</td>
-        <td>0.78M</td>
-        <td>34.41 dB</td>
-        <td><a href="https://drive.google.com/open?id=1x8EjZxvTt0WO4zSdLDgBkKep3jYntrWc">settings</a></td>
+        <td>1.19M</td>
+        <td>34.68 dB</td>
+        <td><a href="https://drive.google.com/open?id=1Lih9k_LHKw6hk9zJ6HjgGf-Mvz6ecNcE">settings</a></td>
+    </tr>
+    <tr>
+        <td><a href="https://drive.google.com/open?id=1oATD-iXlQpcE2mIIEd4-9FOk2Xt5N8oX">edsr-16-x2</a><sup> 2)</sup></td>
+        <td>x2</td>
+        <td>16</td>
+        <td>bicubic</td>
+        <td>1.37M</td>
+        <td>34.64 dB</td>
+        <td><a href="https://drive.google.com/open?id=1FgUfk7UK0f6y4eAcdAOWroREnVsRfV8Z">settings</a></td>
     </tr>
 </table>
 
-<sup>1)</sup> For WDSR-A models an expansion ratio of 6 was used, instead of 4, without a decrease in performance. Please 
-note that the default expansion ratio is 4 when using one the of the `wdsr-a-*` profiles with the `--profile` command 
-line option.
+<sup>1)</sup> WDSR baseline(s), see also [WDSR project page](https://github.com/JiahuiYu/wdsr_ntire2018).  
+<sup>2)</sup> EDSR baseline, see also [EDSR project page](https://github.com/thstkdgus35/EDSR-PyTorch). 
 
+### Experimental models
+
+<table>
+    <tr>
+        <th>Model</th>
+        <th>Scale</th>
+        <th>Residual<br/>blocks</th>
+        <th>Downgrade</th>
+        <th>Parameters</th>
+        <th>PSNR</th>
+        <th>Training</th>
+    </tr>
+    <tr>
+        <td><a href="https://drive.google.com/open?id=1V4XHMFZo35yB_NTaD0dyw1_plS-78-Ju">wdsr-a-32-x2</a></td>
+        <td>x2</td>
+        <td>32</td>
+        <td>bicubic</td>
+        <td>3.55M<sup> 1)</sup></td>
+        <td>34.80 dB</td>
+        <td><a href="https://drive.google.com/open?id=1UgWCb7sSaKjDZDsZE93HhBEm4Rg7ofpa">settings</a></td>
+    </tr>
+    <tr>
+        <td><a href="https://drive.google.com/open?id=1ZTIz1YVXFTI2z3rvBfVuBSthJLJZivxC">wdsr-a-32-x4</a></td>
+        <td>x4</td>
+        <td>32</td>
+        <td>bicubic</td>
+        <td>3.56M<sup> 1)</sup></td>
+        <td>29.17 dB</td>
+        <td><a href="https://drive.google.com/open?id=1RhmgJkqZ86LEWfA7CAPfqBGhmNQ7Y7k7">settings</a></td>
+    </tr>
+    <tr>
+        <td><a href="https://drive.google.com/open?id=1XatcgjJM1s7BD_nHr8ApnyMhTEozY8SI">wdsr-a-32-x2-q90</a></td>
+        <td>x2</td>
+        <td>32</td>
+        <td>bicubic + JPEG (90)<sup> 2)</sup></td>
+        <td>3.55M<sup> 1)</sup></td>
+        <td>32.12 dB</td>
+        <td><a href="https://drive.google.com/open?id=1mhPWkeUhu6d8LAzoFnI85lobcZSfaui0">settings</a></td>
+    </tr>
+    <tr>
+        <td><a href="https://drive.google.com/open?id=1YBAPemerjTEA2OpQUP2o9iD9BZXdloJQ">wdsr-a-32-x4-q90</a></td>
+        <td>x4</td>
+        <td>32</td>
+        <td>bicubic + JPEG (90)<sup> 2)</sup></td>
+        <td>3.56M<sup> 1)</sup></td>
+        <td>27.63 dB</td>
+        <td><a href="https://drive.google.com/open?id=1J4DZv_OCFDrtD82EidYqhMismGFQIhD6">settings</a></td>
+    </tr>
+    <tr>
+        <td><a href="https://drive.google.com/open?id=1_u80R7PA4HauacDw974-hBNfCcnQ9Fah">wdsr-b-32-x2</a></td>
+        <td>x2</td>
+        <td>32</td>
+        <td>bicubic</td>
+        <td>0.59M</td>
+        <td>34.63 dB</td>
+        <td><a href="https://drive.google.com/open?id=1z-XMfUdW1WHHYHPQVILmRcoxbn1nwsva">settings</a></td>
+    </tr>
+</table>
+
+
+<sup>1)</sup> For experimental WDSR-A models, an expansion ratio of 6 was used, increasing the number of parameters
+compared to an expansion ratio of 4. Please note that the default expansion ratio is 4 when using one the of the 
+`wdsr-a-*` profiles with the `--profile` command line option for training. The default expansion ratio for WDSR-B 
+models is 6.  
 <sup>2)</sup> JPEG compression with quality `90` in addition to bicubic downscale. See also section 
 [JPEG compression](#jpeg-compression).
-
-<sup>3)</sup> WDSR-A baseline with 8 residual blocks referenced on the [WDSR project page](https://github.com/JiahuiYu/wdsr_ntire2018). 
-Measured PSNRs are identical.
-
-<sup>3)</sup> Smaller EDSR baseline model than that referenced on the [EDSR project page](https://github.com/thstkdgus35/EDSR-PyTorch)
-(has only 8 residual blocks instead of 16).
 
 ## Demo
 
@@ -284,10 +282,16 @@ when the wrapper is officially available in a Tensorflow release.
     
 ## Other implementations
 
-- [Official PyTorch implementation of the WDSR paper](https://github.com/JiahuiYu/wdsr_ntire2018) 
-- [Official PyTorch implementation of the EDSR paper](https://github.com/thstkdgus35/EDSR-PyTorch) 
-- [Official Torch implementation of the EDSR paper](https://github.com/LimBee/NTIRE2017)
-- [Tensorflow implementation of the EDSR paper](https://github.com/jmiller656/EDSR-Tensorflow)
+### WDSR
+
+- [Official PyTorch implementation](https://github.com/JiahuiYu/wdsr_ntire2018) 
+- [Official Tensorflow implementation](https://github.com/ychfan/tf_estimator_barebone/blob/master/docs/super_resolution.md) 
+
+### EDSR
+
+- [Official PyTorch implementation](https://github.com/thstkdgus35/EDSR-PyTorch) 
+- [Official Torch implementation](https://github.com/LimBee/NTIRE2017)
+- [Tensorflow implementation](https://github.com/jmiller656/EDSR-Tensorflow) by [Josh Miller](https://github.com/jmiller656).
 
 ## Limitations
 
