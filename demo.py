@@ -47,7 +47,7 @@ def main(args):
 
 
 def parser():
-    parser = argparse.ArgumentParser(description='DIV2K benchmark')
+    parser = argparse.ArgumentParser(description='Super resolution demo')
 
     parser.add_argument('-i', '--indir', type=str, default='./demo',
                         help='path to LR images directory')

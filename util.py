@@ -1,7 +1,20 @@
 import tensorflow as tf
 
-from keras import backend as K
+from contextlib import contextmanager
 from PIL import Image
+
+from keras import backend as K
+from keras.utils.data_utils import OrderedEnqueuer
+
+
+@contextmanager
+def concurrent_generator(sequence, num_workers=8, max_queue_size=32, use_multiprocessing=False):
+    enqueuer = OrderedEnqueuer(sequence, use_multiprocessing=use_multiprocessing)
+    try:
+        enqueuer.start(workers=num_workers, max_queue_size=max_queue_size)
+        yield enqueuer.get()
+    finally:
+        enqueuer.stop()
 
 
 def init_session(gpu_memory_fraction):

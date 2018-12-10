@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 def model_paths(input_dir):
-    path_pattern = os.path.join(input_dir, '**', 'epoch-*.h5')
+    path_pattern = os.path.join(input_dir, '**', '*.h5')
     paths = glob.glob(path_pattern, recursive=True)
     paths.sort()
     return paths
@@ -31,7 +31,7 @@ def select_best_psnr(psnr_dict):
 
 
 def evaluate_model(model_path, generator):
-    """Evaluate model with DIV2K benchmark and return PSNR"""
+    """Evaluate model against DIV2K validation set and return PSNR"""
     logger.info('Load model %s', model_path)
     model = load_model(model_path)
 
@@ -41,7 +41,7 @@ def evaluate_model(model_path, generator):
 
 def main(args):
     """
-    Evaluate all models in a user-defined directory against the DIV2K benchmark.
+    Evaluate all models in a user-defined directory against the DIV2K validation set.
 
     The results are written to a user-defined JSON file. All models in the input
     directory must have been trained for the same downgrade operator (bicubic or
@@ -70,13 +70,13 @@ def main(args):
 
 
 def parser():
-    parser = argparse.ArgumentParser(description='DIV2K benchmark')
+    parser = argparse.ArgumentParser(description='Evaluation against DIV2K validation set')
 
     parser.add_argument('-d', '--dataset', type=str, default='./DIV2K_BIN',
                         help='path to DIV2K dataset with images stored as numpy arrays')
     parser.add_argument('-i', '--indir', type=str,
                         help='path to models directory')
-    parser.add_argument('-o', '--outfile', type=str, default='./bench.json',
+    parser.add_argument('-o', '--outfile', type=str, default='./eval.json',
                         help='output JSON file')
     parser.add_argument('-s', '--scale', type=int, default=2, choices=[2, 3, 4],
                         help='super-resolution scale')

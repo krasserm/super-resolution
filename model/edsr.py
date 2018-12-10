@@ -1,10 +1,17 @@
 from keras.layers import Add, Conv2D, Input, Lambda, Activation
 from keras.models import Model
 
-from .common import SubpixelConv2D, Normalization, Denormalization
+from .common import SubpixelConv2D, Normalization, Denormalization, Denormalization_m11
 
 
-def edsr(scale, num_filters=64, num_res_blocks=8, res_block_scaling=None):
+def edsr_generator(scale=4, num_filters=64, num_res_blocks=16):
+    """
+    Returns an EDSR model that can be used as generator in an SRGAN-like network.
+    """
+    return edsr(scale=scale, num_filters=num_filters, num_res_blocks=num_res_blocks, tanh_activation=True)
+
+
+def edsr(scale, num_filters=64, num_res_blocks=8, res_block_scaling=None, tanh_activation=False):
     x_in = Input(shape=(None, None, 3))
     x = Normalization()(x_in)
 
@@ -16,7 +23,12 @@ def edsr(scale, num_filters=64, num_res_blocks=8, res_block_scaling=None):
 
     x = upsample(x, scale, num_filters)
     x = Conv2D(3, 3, padding='same')(x)
-    x = Denormalization()(x)
+
+    if tanh_activation:
+        x = Activation('tanh')(x)
+        x = Denormalization_m11()(x)
+    else:
+        x = Denormalization()(x)
 
     return Model(x_in, x, name="edsr")
 

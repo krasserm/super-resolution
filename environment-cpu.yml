@@ -1,4 +1,4 @@
-name: wdsr
+name: sisr
 dependencies:
 - python=3.6
 - pytest

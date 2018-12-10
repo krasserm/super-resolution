@@ -8,12 +8,12 @@ import tensorflow as tf
 
 from callback import learning_rate, model_checkpoint_after, tensor_board
 from data import cropped_sequence, fullsize_sequence, DOWNGRADES
-from model import edsr, wdsr, copy_weights
+from model import copy_weights, edsr, wdsr, srgan
 from optimizer import weightnorm as wn
 from util import init_session
 
 from keras import backend as K
-from keras.losses import mean_absolute_error
+from keras.losses import mean_absolute_error, mean_squared_error
 from keras.models import load_model
 from keras.optimizers import Adam
 
@@ -60,22 +60,36 @@ def _crop_hr_in_training(hr, sr):
     """
 
     margin = (tf.shape(hr)[1] - tf.shape(sr)[1]) // 2
-    hr = K.in_train_phase(hr[:, margin:-margin, margin:-margin, :], hr)
+
+    # crop only if margin > 0
+    hr_crop = tf.cond(tf.equal(margin, 0),
+                      lambda: hr,
+                      lambda: hr[:, margin:-margin, margin:-margin, :])
+
+    hr = K.in_train_phase(hr_crop, hr)
     hr.uses_learning_phase = True
     return hr, sr
 
 
 def _load_model(path):
-    return load_model(path, custom_objects={'tf': tf,
-                                            'AdamWithWeightnorm': wn.AdamWithWeightnorm,
-                                            'mae_scale_2': mae, # backwards-compatibility
-                                            'mae_scale_3': mae, # backwards-compatibility
-                                            'mae_scale_4': mae, # backwards-compatibility
-                                            'psnr_scale_2': psnr, # backwards-compatibility
-                                            'psnr_scale_3': psnr, # backwards-compatibility
-                                            'psnr_scale_4': psnr, # backwards-compatibility
-                                            'mae': mae,
-                                            'psnr': psnr})
+    return load_model(path, custom_objects={**_custom_objects, **_custom_objects_backwards_compat})
+
+
+_custom_objects = {
+    'tf': tf,
+    'AdamWithWeightnorm': wn.AdamWithWeightnorm,
+    'mae': mae,
+    'psnr': psnr
+}
+
+_custom_objects_backwards_compat = {
+    'mae_scale_2': mae,
+    'mae_scale_3': mae,
+    'mae_scale_4': mae,
+    'psnr_scale_2': psnr,
+    'psnr_scale_3': psnr,
+    'psnr_scale_4': psnr
+}
 
 
 def main(args):
@@ -87,7 +101,7 @@ def main(args):
                                           image_ids=args.training_images, batch_size=args.batch_size)
 
     if args.benchmark:
-        logger.info('Validation with DIV2K benchmark')
+        logger.info('Validation with full-size images from DIV2K validation set')
         validation_steps = len(args.validation_images)
         validation_generator = fullsize_sequence(args.dataset, scale=args.scale, subset='valid', downgrade=args.downgrade,
                                                  image_ids=args.validation_images)
@@ -102,7 +116,24 @@ def main(args):
         model = _load_model(args.pretrained_model)
 
     else:
-        if args.model == "edsr":
+        if args.model == "sr-resnet":
+            #
+            # Pre-training of SRResNet-based generator
+            # (for usage in SRGAN)
+            #
+            loss = mean_squared_error
+            model = srgan.generator(num_filters=args.num_filters,
+                                    num_res_blocks=args.num_res_blocks)
+        elif args.model == "edsr-gen":
+            #
+            # Pre-training of EDSR-based generator
+            # (for usage in an SRGAN-like network)
+            #
+            loss = mean_squared_error
+            model = edsr.edsr_generator(scale=args.scale,
+                                        num_filters=args.num_filters,
+                                        num_res_blocks=args.num_res_blocks)
+        elif args.model == "edsr":
             loss = mean_absolute_error
             model = edsr.edsr(scale=args.scale,
                               num_filters=args.num_filters,
@@ -135,13 +166,14 @@ def main(args):
     callbacks = [
         tensor_board(train_dir),
         learning_rate(step_size=args.learning_rate_step_size, decay=args.learning_rate_decay),
-        model_checkpoint_after(args.save_models_after_epoch, models_dir, monitor='val_psnr',
-                               save_best_only=args.save_best_models_only or args.benchmark)]
+        model_checkpoint_after(args.save_models_after_epoch, models_dir, monitor=f'val_psnr',
+                               save_best_only=args.save_best_models_only or args.benchmark)
+    ]
 
     model.fit_generator(training_generator,
                         epochs=args.epochs,
                         initial_epoch=args.initial_epoch,
-                        steps_per_epoch=args.steps_per_epoch,
+                        steps_per_epoch=args.iterations_per_epoch,
                         validation_data=validation_generator,
                         validation_steps=validation_steps,
                         use_multiprocessing=args.use_multiprocessing,
@@ -156,7 +188,7 @@ def parser():
     parser.add_argument('-p', '--profile', type=str,
                         choices=['wdsr-b-8', 'wdsr-b-16', 'wdsr-b-32',
                                  'wdsr-a-8', 'wdsr-a-16', 'wdsr-a-32',
-                                 'edsr-8', 'edsr-16', 'edsr'],
+                                 'edsr-8', 'edsr-16', 'edsr', 'edsr-gen', 'sr-resnet'],
                         help='model specific argument profiles')
     parser.add_argument('-o', '--outdir', type=str, default='./output',
                         help='output directory')
@@ -179,10 +211,10 @@ def parser():
     #  Model
     # --------------
 
-    parser.add_argument('-m', '--model', type=str, default='wdsr-b', choices=['edsr', 'wdsr-a', 'wdsr-b'],
+    parser.add_argument('-m', '--model', type=str, default='wdsr-b', choices=['edsr', 'edsr-gen', 'wdsr-a', 'wdsr-b', 'sr-resnet'],
                         help='model name')
     parser.add_argument('--num-filters', type=int, default=32,
-                        help='number of output filters in convolutions')
+                        help='number of filters')
     parser.add_argument('--num-res-blocks', type=int, default=8,
                         help='number of residual blocks')
     parser.add_argument('--res-expansion', type=int, default=4,
@@ -195,8 +227,8 @@ def parser():
 
     parser.add_argument('--epochs', type=int, default=300,
                         help='number of epochs to train')
-    parser.add_argument('--steps-per-epoch', type=int, default=1000,
-                        help='number of steps per epoch')
+    parser.add_argument('--iterations-per-epoch', type=int, default=1000,
+                        help='number of update iterations per epoch')
     parser.add_argument('--validation-steps', type=int, default=100,
                         help='number of validation steps for validation')
     parser.add_argument('--batch-size', type=int, default=16,
@@ -218,7 +250,7 @@ def parser():
     parser.add_argument('--save-models-after-epoch', type=int, default=0,
                         help='start saving models only after given epoch')
     parser.add_argument('--benchmark', action='store_true',
-                        help='run DIV2K benchmark after each epoch and save best models only')
+                        help='validate with full-size DIV2K images after each epoch and save best models only')
     parser.add_argument('--initial-epoch', type=int, default=0,
                         help='resumes training of provided model if greater than 0')
     parser.add_argument('--use-multiprocessing', action='store_true',
@@ -326,6 +358,23 @@ def set_profile(args):
         args.num_filters = 256
         args.num_res_blocks = 32
         args.res_scaling = 0.1
+
+    # -----------------------------------------
+    #  Profiles for GAN generator pre-training
+    # -----------------------------------------
+
+    elif args.profile == 'edsr-gen':
+        args.model = 'edsr-gen'
+        args.learning_rate = 1e-4
+        args.num_filters = 64
+
+
+    elif args.profile == 'sr-resnet':
+        args.model = 'sr-resnet'
+        args.scale = 4
+        args.learning_rate = 1e-4
+        args.num_filters = 64
+        args.num_res_blocks = 16
 
 
 def int_range(s):
