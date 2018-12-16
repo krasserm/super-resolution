@@ -173,19 +173,19 @@ choice (`DIV2K` in the following example). The resulting directory structure sho
   
     DIV2K
       DIV2K_train_HR
-        DIV2K_train_LR_bicubic
-          X2
-          X3
-          X4
-        DIV2K_train_LR_unknown
-          X2
-          X3
-          X4
-        DIV2K_valid_HR
-        DIV2K_valid_LR_bicubic
-          ...
-        DIV2K_valid_LR_unknown
-          ...
+      DIV2K_train_LR_bicubic
+        X2
+        X3
+        X4
+      DIV2K_train_LR_unknown
+        X2
+        X3
+        X4
+      DIV2K_valid_HR
+      DIV2K_valid_LR_bicubic
+        ...
+      DIV2K_valid_LR_unknown
+        ...
           
 You only need to download DIV2K archives for those downgrade operators (unknown, bicubic) and super-resolution scales
 (x2, x3, x4) that you'll actually use for training. 
