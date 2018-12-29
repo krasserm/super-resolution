@@ -54,7 +54,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td>1.19M</td>
         <td>34.68 dB</td>
         <!--<td><a href="https://drive.google.com/open?id=1Lih9k_LHKw6hk9zJ6HjgGf-Mvz6ecNcE">settings</a></td>-->
-        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-16 <br>--scale 2</pre></details></td>        
+        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-16 \<br>--scale 2</pre></details></td>        
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1oATD-iXlQpcE2mIIEd4-9FOk2Xt5N8oX">edsr-16-x2</a><sup> 2)</sup></td>
@@ -64,7 +64,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td>1.37M</td>
         <td>34.64 dB</td>
         <!--<td><a href="https://drive.google.com/open?id=1FgUfk7UK0f6y4eAcdAOWroREnVsRfV8Z">settings</a></td>-->
-        <td><details><summary>command</summary><pre>python train.py --profile edsr-16 <br>--scale 2</pre></details></td>        
+        <td><details><summary>command</summary><pre>python train.py --profile edsr-16 \<br>--scale 2</pre></details></td>        
     </tr>
 </table>
 
@@ -88,7 +88,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td>3.55M<sup> 3)</sup></td>
         <td>34.80 dB</td>
         <!--<td><a href="https://drive.google.com/open?id=1UgWCb7sSaKjDZDsZE93HhBEm4Rg7ofpa">settings</a></td>-->
-        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-32 <br>--scale 2 --res-expansion 6</pre></details></td>        
+        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-32 \<br>--scale 2 --res-expansion 6</pre></details></td>        
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1ZTIz1YVXFTI2z3rvBfVuBSthJLJZivxC">wdsr-a-32-x4</a></td>
@@ -98,7 +98,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td>3.56M<sup> 3)</sup></td>
         <td>29.17 dB</td>
         <!--<td><a href="https://drive.google.com/open?id=1RhmgJkqZ86LEWfA7CAPfqBGhmNQ7Y7k7">settings</a></td>-->
-        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-32 <br>--scale 4 --res-expansion 6 <br>--pretrained-model wdsr-a-32-x2-psnr-34.8033.h5</pre></details></td>        
+        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-32 \<br>--scale 4 --res-expansion 6 \<br>--pretrained-model wdsr-a-32-x2-psnr-34.8033.h5</pre></details></td>        
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1XatcgjJM1s7BD_nHr8ApnyMhTEozY8SI">wdsr-a-32-x2-q90</a></td>
@@ -108,7 +108,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td>3.55M<sup> 3)</sup></td>
         <td>32.12 dB</td>
         <!--<td><a href="https://drive.google.com/open?id=1mhPWkeUhu6d8LAzoFnI85lobcZSfaui0">settings</a></td>-->
-        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-32 <br>--scale 2 --res-expansion 6 <br>--downgrade bicubic_jpeg_90 </pre></details></td>        
+        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-32 \<br>--scale 2 --res-expansion 6 \<br>--downgrade bicubic_jpeg_90 </pre></details></td>        
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1YBAPemerjTEA2OpQUP2o9iD9BZXdloJQ">wdsr-a-32-x4-q90</a></td>
@@ -118,7 +118,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td>3.56M<sup> 3)</sup></td>
         <td>27.63 dB</td>
         <!--<td><a href="https://drive.google.com/open?id=1J4DZv_OCFDrtD82EidYqhMismGFQIhD6">settings</a></td>-->
-        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-32 <br>--scale 4 --res-expansion 6 <br>--downgrade bicubic_jpeg_90 <br>--pretrained-model wdsr-a-32-x2-q90-psnr-32.1198.h5</pre></details></td>        
+        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-32 \<br>--scale 4 --res-expansion 6 \<br>--downgrade bicubic_jpeg_90 \<br>--pretrained-model wdsr-a-32-x2-q90-psnr-32.1198.h5</pre></details></td>        
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1_u80R7PA4HauacDw974-hBNfCcnQ9Fah">wdsr-b-32-x2</a></td>
@@ -128,7 +128,7 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td>0.59M</td>
         <td>34.63 dB</td>
         <!--<td><a href="https://drive.google.com/open?id=1z-XMfUdW1WHHYHPQVILmRcoxbn1nwsva">settings</a></td>-->
-        <td><details><summary>command</summary><pre>python train.py --profile wdsr-b-32 <br>--scale 2</pre></details></td>        
+        <td><details><summary>command</summary><pre>python train.py --profile wdsr-b-32 \<br>--scale 2</pre></details></td>        
     </tr>
 </table>
 
