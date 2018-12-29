@@ -72,7 +72,7 @@ def main(args):
 def parser():
     parser = argparse.ArgumentParser(description='DIV2K benchmark')
 
-    parser.add_argument('-d', '--dataset', type=str, default='./dataset',
+    parser.add_argument('-d', '--dataset', type=str, default='./DIV2K_BIN',
                         help='path to DIV2K dataset with images stored as numpy arrays')
     parser.add_argument('-i', '--indir', type=str,
                         help='path to models directory')

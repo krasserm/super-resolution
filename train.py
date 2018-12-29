@@ -165,7 +165,7 @@ def parser():
     #  Dataset
     # --------------
 
-    parser.add_argument('-d', '--dataset', type=str, default='./dataset',
+    parser.add_argument('-d', '--dataset', type=str, default='./DIV2K_BIN',
                         help='path to DIV2K dataset with images stored as numpy arrays')
     parser.add_argument('-s', '--scale', type=int, default=2, choices=[2, 3, 4],
                         help='super-resolution scale')
@@ -185,7 +185,7 @@ def parser():
                         help='number of output filters in convolutions')
     parser.add_argument('--num-res-blocks', type=int, default=8,
                         help='number of residual blocks')
-    parser.add_argument('--res-expansion', type=float, default=6,
+    parser.add_argument('--res-expansion', type=int, default=4,
                         help='expansion factor r in WDSR models')
     parser.add_argument('--res-scaling', type=float,
                         help='residual scaling factor')
@@ -284,7 +284,6 @@ def set_profile(args):
         args.learning_rate = 1e-3
         args.num_filters = 32
         args.num_res_blocks = 8
-        args.res_expansion = 4
 
     # WDSR-A baseline (modified to 16 residual blocks)
     elif args.profile == 'wdsr-a-16':
@@ -293,7 +292,6 @@ def set_profile(args):
         args.learning_rate = 1e-3
         args.num_filters = 32
         args.num_res_blocks = 16
-        args.res_expansion = 4
 
     # WDSR-A baseline (modified to 32 residual blocks)
     elif args.profile == 'wdsr-a-32':
@@ -302,7 +300,6 @@ def set_profile(args):
         args.learning_rate = 1e-3
         args.num_filters = 32
         args.num_res_blocks = 32
-        args.res_expansion = 4
 
     # ----------------------------------
     #  EDSR profiles

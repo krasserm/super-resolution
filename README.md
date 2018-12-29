@@ -29,10 +29,8 @@ version are already installed on your system.
 
 ## Pre-trained models
 
-Pre-trained models are available [here](https://drive.google.com/drive/folders/13YjKmP5O8NK_E_dFlK-34Okn1IIM9c58). 
-Each directory contains a model together with the training settings. All of them were trained with images 1-800 from 
-the DIV2K training set using the specified downgrade operator. Random crops and transformations were made as described 
-in the EDSR paper. Model performance is measured in dB [PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) 
+All models were trained with images 1-800 from the DIV2K training set using the specified downgrade operator. Random 
+crops and transformations were made as described in the EDSR paper. Model performance is measured in dB [PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) 
 on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, without self-ensemble). See also section 
 [Training](#training).
 
@@ -49,22 +47,14 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <th>Training</th>
     </tr>
     <tr>
-        <td><a href="https://drive.google.com/open?id=1Vr_eLXnNA7H6zNWmEFKOBv4-xvOBt5iu">wdsr-a-8-x2</a><sup> 1)</sup></td>
-        <td>x2</td>
-        <td>8</td>
-        <td>bicubic</td>
-        <td>0.89M</td>
-        <td>34.54 dB</td>
-        <td><a href="https://drive.google.com/open?id=1VL4i4i1XuMy65wbq8fiWOOfMNziRqmdE">settings</a></td>
-    </tr>
-    <tr>
         <td><a href="https://drive.google.com/open?id=1WmuSpNamFSszQOafrno05o1nDN4QjMeq">wdsr-a-16-x2</a><sup> 1)</sup></td>
         <td>x2</td>
         <td>16</td>
         <td>bicubic</td>
         <td>1.19M</td>
         <td>34.68 dB</td>
-        <td><a href="https://drive.google.com/open?id=1Lih9k_LHKw6hk9zJ6HjgGf-Mvz6ecNcE">settings</a></td>
+        <!--<td><a href="https://drive.google.com/open?id=1Lih9k_LHKw6hk9zJ6HjgGf-Mvz6ecNcE">settings</a></td>-->
+        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-16 <br>--scale 2</pre></details></td>        
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1oATD-iXlQpcE2mIIEd4-9FOk2Xt5N8oX">edsr-16-x2</a><sup> 2)</sup></td>
@@ -73,12 +63,10 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td>bicubic</td>
         <td>1.37M</td>
         <td>34.64 dB</td>
-        <td><a href="https://drive.google.com/open?id=1FgUfk7UK0f6y4eAcdAOWroREnVsRfV8Z">settings</a></td>
+        <!--<td><a href="https://drive.google.com/open?id=1FgUfk7UK0f6y4eAcdAOWroREnVsRfV8Z">settings</a></td>-->
+        <td><details><summary>command</summary><pre>python train.py --profile edsr-16 <br>--scale 2</pre></details></td>        
     </tr>
 </table>
-
-<sup>1)</sup> WDSR baseline(s), see also [WDSR project page](https://github.com/JiahuiYu/wdsr_ntire2018).  
-<sup>2)</sup> EDSR baseline, see also [EDSR project page](https://github.com/thstkdgus35/EDSR-PyTorch). 
 
 ### Experimental models
 
@@ -97,36 +85,40 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td>x2</td>
         <td>32</td>
         <td>bicubic</td>
-        <td>3.55M<sup> 1)</sup></td>
+        <td>3.55M<sup> 3)</sup></td>
         <td>34.80 dB</td>
-        <td><a href="https://drive.google.com/open?id=1UgWCb7sSaKjDZDsZE93HhBEm4Rg7ofpa">settings</a></td>
+        <!--<td><a href="https://drive.google.com/open?id=1UgWCb7sSaKjDZDsZE93HhBEm4Rg7ofpa">settings</a></td>-->
+        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-32 <br>--scale 2 --res-expansion 6</pre></details></td>        
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1ZTIz1YVXFTI2z3rvBfVuBSthJLJZivxC">wdsr-a-32-x4</a></td>
         <td>x4</td>
         <td>32</td>
         <td>bicubic</td>
-        <td>3.56M<sup> 1)</sup></td>
+        <td>3.56M<sup> 3)</sup></td>
         <td>29.17 dB</td>
-        <td><a href="https://drive.google.com/open?id=1RhmgJkqZ86LEWfA7CAPfqBGhmNQ7Y7k7">settings</a></td>
+        <!--<td><a href="https://drive.google.com/open?id=1RhmgJkqZ86LEWfA7CAPfqBGhmNQ7Y7k7">settings</a></td>-->
+        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-32 <br>--scale 4 --res-expansion 6 <br>--pretrained-model wdsr-a-32-x2-psnr-34.8033.h5</pre></details></td>        
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1XatcgjJM1s7BD_nHr8ApnyMhTEozY8SI">wdsr-a-32-x2-q90</a></td>
         <td>x2</td>
         <td>32</td>
-        <td>bicubic + JPEG (90)<sup> 2)</sup></td>
-        <td>3.55M<sup> 1)</sup></td>
+        <td>bicubic + JPEG (90)<sup> 4)</sup></td>
+        <td>3.55M<sup> 3)</sup></td>
         <td>32.12 dB</td>
-        <td><a href="https://drive.google.com/open?id=1mhPWkeUhu6d8LAzoFnI85lobcZSfaui0">settings</a></td>
+        <!--<td><a href="https://drive.google.com/open?id=1mhPWkeUhu6d8LAzoFnI85lobcZSfaui0">settings</a></td>-->
+        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-32 <br>--scale 2 --res-expansion 6 <br>--downgrade bicubic_jpeg_90 </pre></details></td>        
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1YBAPemerjTEA2OpQUP2o9iD9BZXdloJQ">wdsr-a-32-x4-q90</a></td>
         <td>x4</td>
         <td>32</td>
-        <td>bicubic + JPEG (90)<sup> 2)</sup></td>
-        <td>3.56M<sup> 1)</sup></td>
+        <td>bicubic + JPEG (90)<sup> 4)</sup></td>
+        <td>3.56M<sup> 3)</sup></td>
         <td>27.63 dB</td>
-        <td><a href="https://drive.google.com/open?id=1J4DZv_OCFDrtD82EidYqhMismGFQIhD6">settings</a></td>
+        <!--<td><a href="https://drive.google.com/open?id=1J4DZv_OCFDrtD82EidYqhMismGFQIhD6">settings</a></td>-->
+        <td><details><summary>command</summary><pre>python train.py --profile wdsr-a-32 <br>--scale 4 --res-expansion 6 <br>--downgrade bicubic_jpeg_90 <br>--pretrained-model wdsr-a-32-x2-q90-psnr-32.1198.h5</pre></details></td>        
     </tr>
     <tr>
         <td><a href="https://drive.google.com/open?id=1_u80R7PA4HauacDw974-hBNfCcnQ9Fah">wdsr-b-32-x2</a></td>
@@ -135,16 +127,19 @@ on the DIV2K benchmark (images 801-900 of DIV2K validation set, RGB channels, wi
         <td>bicubic</td>
         <td>0.59M</td>
         <td>34.63 dB</td>
-        <td><a href="https://drive.google.com/open?id=1z-XMfUdW1WHHYHPQVILmRcoxbn1nwsva">settings</a></td>
+        <!--<td><a href="https://drive.google.com/open?id=1z-XMfUdW1WHHYHPQVILmRcoxbn1nwsva">settings</a></td>-->
+        <td><details><summary>command</summary><pre>python train.py --profile wdsr-b-32 <br>--scale 2</pre></details></td>        
     </tr>
 </table>
 
 
-<sup>1)</sup> For experimental WDSR-A models, an expansion ratio of 6 was used, increasing the number of parameters
+<sup>1)</sup> WDSR baseline(s), see also [WDSR project page](https://github.com/JiahuiYu/wdsr_ntire2018).  
+<sup>2)</sup> EDSR baseline, see also [EDSR project page](https://github.com/thstkdgus35/EDSR-PyTorch).   
+<sup>3)</sup> For experimental WDSR-A models, an expansion ratio of 6 was used, increasing the number of parameters
 compared to an expansion ratio of 4. Please note that the default expansion ratio is 4 when using one the of the 
 `wdsr-a-*` profiles with the `--profile` command line option for training. The default expansion ratio for WDSR-B 
 models is 6.  
-<sup>2)</sup> JPEG compression with quality `90` in addition to bicubic downscale. See also section 
+<sup>4)</sup> JPEG compression with quality `90` in addition to bicubic downscale. See also section 
 [JPEG compression](#jpeg-compression).
 
 ## Demo
@@ -167,7 +162,7 @@ the DIV2K validation set.
 
 ### Download
 
-If you want to [train](#training) and [evaluate](#evaluation) models, you must download the 
+If you want to [train](#training) and [evaluate](#evaluation) models, download the 
 [DIV2K dataset](https://data.vision.ee.ethz.ch/cvl/DIV2K/) and extract the downloaded archives to a directory of your 
 choice (`DIV2K` in the following example). The resulting directory structure should look like:
   
@@ -197,8 +192,8 @@ to numpy arrays dramatically reduces image loading times. Conversion can be done
 
     python convert.py -i ./DIV2K -o ./DIV2K_BIN numpy
 
-In this example, converted images are written to the `DIV2K_BIN` directory. You'll later refer to this directory with the 
-`--dataset` command line option. 
+In this example, converted images are written to the `DIV2K_BIN` directory. By default, training and evaluation scripts 
+read from this directory which can be overriden with the `--dataset` command line option. 
 
 ### JPEG compression
 
@@ -252,10 +247,10 @@ For a more detailed overview of available command line options and profiles plea
 An alternative to the `--benchmark` training option is to evaluate saved models with `bench.py` and then select the
 model with the highest PSNR. For example,
 
-    python bench.py -i ./output/20181016-063620/models -o bench.json
+    python bench.py --dataset ./DIV2K_BIN -i ./output/20181016-063620/models -o bench.json
     
 evaluates all models in directory `./output/20181016-063620/models` and writes the results to `bench.json`. This JSON
-file maps model filenames to evaluation PSNR. The `bench.py` script also writes the best model in terms of PSNR to `stdout`
+file maps model filenames to evaluation PSNR. The `bench.py` script also writes the model with the best PSNR to `stdout`
 at the end of evaluation:
 
     Best PSNR = 34.5394 for model ./output/20181016-063620/models/epoch-294-psnr-37.4630.h5 
