@@ -12,6 +12,13 @@ A [Keras](https://keras.io/)-based implementation of
 
 This projects also supports fine-tuning of EDSR models as generators in SRGAN-like networks.
 
+## News
+
+On branch [wip-tf2](https://github.com/krasserm/super-resolution/tree/wip-tf2) a migration to Tensorflow 2.0 is **work in 
+progress**. Models have been already been migrated and Jupyter notebooks are provided for running basic training loops. 
+Furthermore, DIV2K images are automatically downloaded (no manual setup needed any more) and a bug in the SRGAN discriminator
+has been fixed which significantly improves SRGAN results.
+
 ## Table of contents
 
 - [Environment setup](#environment-setup)
