@@ -12,12 +12,22 @@ A [Keras](https://keras.io/)-based implementation of
 
 This projects also supports fine-tuning of EDSR models as generators in SRGAN-like networks.
 
-## News
+## NEWS
 
-On branch [wip-tf2](https://github.com/krasserm/super-resolution/tree/wip-tf2) a migration to Tensorflow 2.0 is **work in 
-progress**. Models have been already been migrated and Jupyter notebooks are provided for running basic training loops. 
-Furthermore, DIV2K images are automatically downloaded (no manual setup needed any more) and a bug in the SRGAN discriminator
-has been fixed which significantly improves SRGAN results.
+### Jun 20, 2019
+
+**On branch [wip-tf2](https://github.com/krasserm/super-resolution/tree/wip-tf2) EDSR, WDSR and SRGAN models have been 
+migrated to [Tensorflow 2.0](https://www.tensorflow.org/beta)**. Jupyter notebooks are provided to demonstrate how to train
+these models. For SRGAN pre-trained models are available. A bug in the SRGAN discriminator has been fixed which significantly 
+improves SRGAN results.
+ 
+Weight normalization is now available as layer wrapper in [Tensorflow Addons](https://github.com/tensorflow/addons) which 
+has been used to implement WDSR models. Also, DIV2K images don't need to be downloaded manually any more but are automatically 
+downloaded by a `DIV2K` data provider.   
+
+Although branch wip-tf2 is **work in progress** model implementations are complete and can be trained as described in
+the corresponding papers with the provided Jupyter notebooks. Model and training code has been dramatically simplified,
+not only because of new features available in Tensorflow 2.0 and Tensorflow Addons.
 
 ## Table of contents
 
