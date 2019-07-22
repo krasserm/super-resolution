@@ -37,9 +37,9 @@ def res_block(x_in, filters, scaling):
     x = Conv2D(filters, 3, padding='same')(x_in)
     x = Activation('relu')(x)
     x = Conv2D(filters, 3, padding='same')(x)
-    x = Add()([x_in, x])
     if scaling:
         x = Lambda(lambda t: t * scaling)(x)
+    x = Add()([x_in, x])
     return x
 
 

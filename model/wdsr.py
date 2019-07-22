@@ -43,9 +43,9 @@ def res_block_a(x_in, num_filters, expansion, kernel_size, scaling):
     x = Conv2D(num_filters * expansion, kernel_size, padding='same')(x_in)
     x = Activation('relu')(x)
     x = Conv2D(num_filters, kernel_size, padding='same')(x)
-    x = Add()([x_in, x])
     if scaling:
         x = Lambda(lambda t: t * scaling)(x)
+    x = Add()([x_in, x])
     return x
 
 
@@ -55,9 +55,9 @@ def res_block_b(x_in, num_filters, expansion, kernel_size, scaling):
     x = Activation('relu')(x)
     x = Conv2D(int(num_filters * linear), 1, padding='same')(x)
     x = Conv2D(num_filters, kernel_size, padding='same')(x)
-    x = Add()([x_in, x])
     if scaling:
         x = Lambda(lambda t: t * scaling)(x)
+    x = Add()([x_in, x])
     return x
 
 
