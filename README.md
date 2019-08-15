@@ -12,18 +12,20 @@ A [Keras](https://keras.io/)-based implementation of
 
 This projects also supports fine-tuning of EDSR models as generators in SRGAN-like networks.
 
-## NEWS
+## News
 
-### Jun 20, 2019
+### Aug 15, 2019
 
 **On branch [wip-tf2](https://github.com/krasserm/super-resolution/tree/wip-tf2), EDSR, WDSR and SRGAN models have been 
-migrated to [Tensorflow 2.0](https://www.tensorflow.org/beta)**. 
+migrated to [Tensorflow 2.0](https://www.tensorflow.org/beta)**. Although this is work in progress, models can already be 
+trained as described in the papers and pre-trained model are available. See 
 
-Although this is work in progress, models can already be trained as described in the papers. Pre-trained SRGAN 
-models are available. Implementation of weight normalization has been simplified with the new `WeightNormalization` 
-wrapper in [Tensorflow Addons](https://github.com/tensorflow/addons). Several other simplifications have been made to 
-SRGAN and WDSR training as well. DIV2K images are now automatically downloaded and converted to binary format for faster 
-loading. This is done by a `DIV2K` data provider with an implementation based on `tf.data.Dataset`.
+- [example-edsr.ipynb](https://github.com/krasserm/super-resolution/blob/wip-tf2/example-edsr.ipynb) 
+- [example-wdsr.ipynb](https://github.com/krasserm/super-resolution/blob/wip-tf2/example-wdsr.ipynb) 
+- [example-srgan.ipynb](https://github.com/krasserm/super-resolution/blob/wip-tf2/example-srgan.ipynb) 
+
+DIV2K images are automatically downloaded and converted to binary format for faster loading. This is done by a `DIV2K` 
+data provider with an implementation based on `tf.data.Dataset`.
 
 ## Table of contents
 
@@ -81,15 +83,19 @@ resize with bicubic interpolation (code for generating these figures not include
 
 ### EDSR + SRGAN
 
-A problem with pixel-wise loss functions is that they fail to recover high-frequency details. Super-resolution results
+**Support for custom [SRGAN training](#perceptual-loss-srgan) is still work in progress. If you'd like to see an 
+implementation  of the original SRGAN (as described in the paper) for Tensorflow 2.0, please go to [example-srgan.ipynb](https://github.com/krasserm/super-resolution/blob/wip-tf2/example-srgan.ipynb) 
+on branch [wip-tf2](https://github.com/krasserm/super-resolution/tree/wip-tf2).** Pre-trained models are available too.
+
+One problem with pixel-wise loss functions is that they fail to recover high-frequency details. Super-resolution results
 are typically overly smooth with lower perceptual quality, especially at scale x4. A perceptual loss as described in the 
 SRGAN paper (a combination of a VGG-based content loss and an adversarial loss) is able to generate more realistic 
 textures with higher perceptual quality but at the cost of lower PSNR values.
 
 An EDSR baseline model that has been fine-tuned as generator in an SRGAN-like network can be downloaded from [here](https://drive.google.com/open?id=1Z7PhioyvTzLBOdrg6c4RNEP9JEIqudwP). 
-Please note that support for [SRGAN training](#perceptual-loss-srgan) is still work in progress. Assuming that the path 
-to the downloaded model is `~/Downloads/edsr-16-x4-gen-epoch-088.h5`, the following command super-resolves the image in 
-directory [`./demo/gan`](demo/gan) with factor x4 and writes the result to directory `./output`:
+Assuming that the path to the downloaded model is `~/Downloads/edsr-16-x4-gen-epoch-088.h5`, the following command 
+super-resolves the image in  directory [`./demo/gan`](demo/gan) with factor x4 and writes the result to directory 
+`./output`:
 
     python demo.py -i ./demo/gan -o ./output --model ~/Downloads/edsr-16-x4-gen-epoch-088.h5
 
