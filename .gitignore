@@ -1,4 +1,4 @@
 .ipynb_checkpoints
-tests/dataset/arr
-tests/.pytest*
+.div2k
+.ckpt
 

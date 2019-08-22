@@ -1,140 +1,162 @@
 import os
-import numpy as np
+import tensorflow as tf
 
-from keras.utils.data_utils import Sequence
-
-DOWNGRADES = ['bicubic', 'bicubic_jpeg_75', 'bicubic_jpeg_90', 'unknown']
+from tensorflow.python.data.experimental import AUTOTUNE
 
 
-class DIV2KSequence(Sequence):
+class DIV2K:
     def __init__(self,
-                 path,
                  scale=2,
                  subset='train',
                  downgrade='bicubic',
-                 image_ids=None,
-                 random_rotate=True,
-                 random_flip=True,
-                 random_crop=True,
-                 crop_size=96,
-                 batch_size=16):
-        """
-        Sequence over a DIV2K subset.
+                 images_dir='.div2k/images',
+                 caches_dir='.div2k/caches'):
 
-        Reads DIV2K images that have been converted to numpy arrays with convert.py.
+        self._ntire_2018 = True
 
-        :param path: path to DIV2K dataset with images stored as numpy arrays.
-        :param scale: super resolution scale, either 2, 3 or 4.
-        :param subset:  either 'train' or 'valid', referring to training and validation subset, respectively.
-        :param downgrade: downgrade operator, see DOWNGRADES.
-        :param image_ids: list of image ids to use from the specified subset. Default is None which means
-                          all image ids from the specified subset.
-        :param random_rotate: if True images are randomly rotated by 0, 90, 180 or 270 degrees.
-        :param random_flip: if True images are randomly flipped horizontally.
-        :param random_crop: if True images are randomly cropped.
-        :param crop_size: size of crop window in HR image. Only used if random_crop=True.
-        :param batch_size: size of generated batches.
-        """
+        _scales = [2, 3, 4, 8]
 
-        if not os.path.exists(path):
-            raise FileNotFoundError(f"Path {path} doesn't exist")
-        if scale not in [2, 3, 4]:
-            raise ValueError('scale must be 2, 3 or 4')
-        if subset not in ['train', 'valid']:
+        if scale in _scales:
+            self.scale = scale
+        else:
+            raise ValueError(f'scale must be in ${_scales}')
+
+        if subset == 'train':
+            self.image_ids = range(1, 801)
+        elif subset == 'valid':
+            self.image_ids = range(801, 901)
+        else:
             raise ValueError("subset must be 'train' or 'valid'")
-        if downgrade not in DOWNGRADES:
-            raise ValueError(f"downgrade must be in {DOWNGRADES}")
-        if not random_crop and batch_size != 1:
-            raise ValueError('batch_size must be 1 if random_crop=False')
 
-        self.path = path
-        self.scale = scale
+        _downgrades_a = ['bicubic', 'unknown']
+        _downgrades_b = ['mild', 'difficult']
+
+        if scale == 8 and downgrade != 'bicubic':
+            raise ValueError(f'scale 8 only allowed for bicubic downgrade')
+
+        if downgrade in _downgrades_b and scale != 4:
+            raise ValueError(f'{downgrade} downgrade requires scale 4')
+
+        if downgrade == 'bicubic' and scale == 8:
+            self.downgrade = 'x8'
+        elif downgrade in _downgrades_b:
+            self.downgrade = downgrade
+        else:
+            self.downgrade = downgrade
+            self._ntire_2018 = False
+
         self.subset = subset
-        self.downgrade = downgrade
+        self.images_dir = images_dir
+        self.caches_dir = caches_dir
 
-        if image_ids is None:
-            if subset == 'train':
-                self.image_ids = range(1, 801)
-            else:
-                self.image_ids = range(801, 901)
-        else:
-            self.image_ids = image_ids
-
-        self.random_rotate = random_rotate
-        self.random_flip = random_flip
-        self.random_crop = random_crop
-        self.crop_size = crop_size
-        self.batch_size = batch_size
-
-    def __getitem__(self, index):
-        if self.batch_size == 1:
-            return self._batch_1(self.image_ids[index])
-        else:
-            beg = index * self.batch_size
-            end = (index + 1) * self.batch_size
-            return self._batch_n(self.image_ids[beg:end])
+        os.makedirs(images_dir, exist_ok=True)
+        os.makedirs(caches_dir, exist_ok=True)
 
     def __len__(self):
-        return int(np.ceil(len(self.image_ids) / self.batch_size))
+        return len(self.image_ids)
 
-    def _batch_1(self, id):
-        lr, hr = self._pair(id)
+    def dataset(self, batch_size=16, repeat_count=None, random_transform=True):
+        ds = tf.data.Dataset.zip((self.lr_dataset(), self.hr_dataset()))
+        if random_transform:
+            ds = ds.map(lambda lr, hr: random_crop(lr, hr, scale=self.scale), num_parallel_calls=AUTOTUNE)
+            ds = ds.map(random_rotate, num_parallel_calls=AUTOTUNE)
+            ds = ds.map(random_flip, num_parallel_calls=AUTOTUNE)
+        ds = ds.batch(batch_size)
+        ds = ds.repeat(repeat_count)
+        ds = ds.prefetch(buffer_size=AUTOTUNE)
+        return ds
 
-        return np.expand_dims(np.array(lr, dtype='uint8'), axis=0), \
-               np.expand_dims(np.array(hr, dtype='uint8'), axis=0)
+    def hr_dataset(self):
+        if not os.path.exists(self._hr_images_dir()):
+            download_archive(self._hr_images_archive(), self.images_dir, extract=True)
 
-    def _batch_n(self, ids):
-        lr_crop_size = self.crop_size // self.scale
-        hr_crop_size = self.crop_size
+        ds = self._images_dataset(self._hr_image_files()).cache(self._hr_cache_file())
 
-        lr_batch = np.zeros((len(ids), lr_crop_size, lr_crop_size, 3), dtype='uint8')
-        hr_batch = np.zeros((len(ids), hr_crop_size, hr_crop_size, 3), dtype='uint8')
+        if not os.path.exists(self._hr_cache_index()):
+            self._populate_cache(ds, self._hr_cache_file())
 
-        for i, id in enumerate(ids):
-            lr, hr = self._pair(id)
-            lr_batch[i] = lr
-            hr_batch[i] = hr
+        return ds
 
-        return lr_batch, hr_batch
+    def lr_dataset(self):
+        if not os.path.exists(self._lr_images_dir()):
+            download_archive(self._lr_images_archive(), self.images_dir, extract=True)
 
-    def _pair(self, id):
-        lr_path = self._lr_image_path(id)
-        hr_path = self._hr_image_path(id)
+        ds = self._images_dataset(self._lr_image_files()).cache(self._lr_cache_file())
 
-        lr = np.load(lr_path)
-        hr = np.load(hr_path)
+        if not os.path.exists(self._lr_cache_index()):
+            self._populate_cache(ds, self._lr_cache_file())
 
-        if self.random_crop:
-            lr, hr = _random_crop(lr, hr, self.crop_size, self.scale)
-        if self.random_flip:
-            lr, hr = _random_flip(lr, hr)
-        if self.random_rotate:
-            lr, hr = _random_rotate(lr, hr)
+        return ds
 
-        return lr, hr
+    def _hr_cache_file(self):
+        return os.path.join(self.caches_dir, f'DIV2K_{self.subset}_HR.cache')
 
-    def _hr_image_path(self, id):
-        return os.path.join(self.path, f'DIV2K_{self.subset}_HR', f'{id:04}.npy')
+    def _lr_cache_file(self):
+        return os.path.join(self.caches_dir, f'DIV2K_{self.subset}_LR_{self.downgrade}_X{self.scale}.cache')
 
-    def _lr_image_path(self, id):
-        return os.path.join(self.path, f'DIV2K_{self.subset}_LR_{self.downgrade}', f'X{self.scale}', f'{id:04}x{self.scale}.npy')
+    def _hr_cache_index(self):
+        return f'{self._hr_cache_file()}.index'
+
+    def _lr_cache_index(self):
+        return f'{self._lr_cache_file()}.index'
+
+    def _hr_image_files(self):
+        images_dir = self._hr_images_dir()
+        return [os.path.join(images_dir, f'{image_id:04}.png') for image_id in self.image_ids]
+
+    def _lr_image_files(self):
+        images_dir = self._lr_images_dir()
+        return [os.path.join(images_dir, self._lr_image_file(image_id)) for image_id in self.image_ids]
+
+    def _lr_image_file(self, image_id):
+        if not self._ntire_2018 or self.scale == 8:
+            return f'{image_id:04}x{self.scale}.png'
+        else:
+            return f'{image_id:04}x{self.scale}{self.downgrade[0]}.png'
+
+    def _hr_images_dir(self):
+        return os.path.join(self.images_dir, f'DIV2K_{self.subset}_HR')
+
+    def _lr_images_dir(self):
+        if self._ntire_2018:
+            return os.path.join(self.images_dir, f'DIV2K_{self.subset}_LR_{self.downgrade}')
+        else:
+            return os.path.join(self.images_dir, f'DIV2K_{self.subset}_LR_{self.downgrade}', f'X{self.scale}')
+
+    def _hr_images_archive(self):
+        return f'DIV2K_{self.subset}_HR.zip'
+
+    def _lr_images_archive(self):
+        if self._ntire_2018:
+            return f'DIV2K_{self.subset}_LR_{self.downgrade}.zip'
+        else:
+            return f'DIV2K_{self.subset}_LR_{self.downgrade}_X{self.scale}.zip'
+
+    @staticmethod
+    def _images_dataset(image_files):
+        ds = tf.data.Dataset.from_tensor_slices(image_files)
+        ds = ds.map(tf.io.read_file)
+        ds = ds.map(lambda x: tf.image.decode_png(x, channels=3), num_parallel_calls=AUTOTUNE)
+        return ds
+
+    @staticmethod
+    def _populate_cache(ds, cache_file):
+        print(f'Caching decoded images in {cache_file} ...')
+        for _ in ds: pass
+        print(f'Cached decoded images in {cache_file}.')
 
 
-def cropped_sequence(path, scale, subset, downgrade, image_ids=None, batch_size=16):
-    return DIV2KSequence(path=path, scale=scale, subset=subset, downgrade=downgrade, image_ids=image_ids,
-                         batch_size=batch_size, crop_size=48 * scale)
+# -----------------------------------------------------------
+#  Transformations
+# -----------------------------------------------------------
 
 
-def fullsize_sequence(path, scale, subset, downgrade, image_ids=None):
-    return DIV2KSequence(path=path, scale=scale, subset=subset, downgrade=downgrade, image_ids=image_ids,
-                         batch_size=1, random_rotate=False, random_flip=False, random_crop=False)
-
-
-def _random_crop(lr_img, hr_img, hr_crop_size, scale):
+def random_crop(lr_img, hr_img, hr_crop_size=96, scale=2):
     lr_crop_size = hr_crop_size // scale
+    lr_img_shape = tf.shape(lr_img)[:2]
 
-    lr_w = np.random.randint(lr_img.shape[1] - lr_crop_size + 1)
-    lr_h = np.random.randint(lr_img.shape[0] - lr_crop_size + 1)
+    lr_w = tf.random.uniform(shape=(), maxval=lr_img_shape[1] - lr_crop_size + 1, dtype=tf.int32)
+    lr_h = tf.random.uniform(shape=(), maxval=lr_img_shape[0] - lr_crop_size + 1, dtype=tf.int32)
 
     hr_w = lr_w * scale
     hr_h = lr_h * scale
@@ -145,13 +167,26 @@ def _random_crop(lr_img, hr_img, hr_crop_size, scale):
     return lr_img_cropped, hr_img_cropped
 
 
-def _random_flip(lr_img, hr_img):
-    if np.random.rand() > 0.5:
-        return np.fliplr(lr_img), np.fliplr(hr_img)
-    else:
-        return lr_img, hr_img
+def random_flip(lr_img, hr_img):
+    rn = tf.random.uniform(shape=(), maxval=1)
+    return tf.cond(rn < 0.5,
+                   lambda: (lr_img, hr_img),
+                   lambda: (tf.image.flip_left_right(lr_img),
+                            tf.image.flip_left_right(hr_img)))
 
 
-def _random_rotate(lr_img, hr_img):
-    k = np.random.choice(range(4))
-    return np.rot90(lr_img, k), np.rot90(hr_img, k)
+def random_rotate(lr_img, hr_img):
+    rn = tf.random.uniform(shape=(), maxval=4, dtype=tf.int32)
+    return tf.image.rot90(lr_img, rn), tf.image.rot90(hr_img, rn)
+
+
+# -----------------------------------------------------------
+#  IO
+# -----------------------------------------------------------
+
+
+def download_archive(file, target_dir, extract=True):
+    source_url = f'http://data.vision.ee.ethz.ch/cvl/DIV2K/{file}'
+    target_dir = os.path.abspath(target_dir)
+    tf.keras.utils.get_file(file, source_url, cache_subdir=target_dir, extract=extract)
+    os.remove(os.path.join(target_dir, file))
