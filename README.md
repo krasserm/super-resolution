@@ -10,6 +10,8 @@ A [Tensorflow 2.0](https://www.tensorflow.org/beta) based implementation of
   of the [NTIRE 2017](http://www.vision.ee.ethz.ch/ntire17/) super-resolution challenge.
 - [Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network](https://arxiv.org/abs/1609.04802) (SRGAN).
 
+A Keras/Tensorflow 1.x based implementation is available [here](https://github.com/krasserm/super-resolution/tree/previous).
+
 ## Overview
 
 Training and usage of EDSR, WDSR and SRGAN models is demonstrated in  
@@ -149,8 +151,3 @@ A command-line interface for model training and evaluation is not implemented ye
  
 for training details. EDSR and SRGAN training is done with a custom training loop whereas WDSR training uses the 
 high-level Keras API.
-
-## Previous implementation
-
-A previous implementation of EDSR, WDSR and SRGAN based on Keras and Tensorflow 1.x is available on 
-[this branch](https://github.com/krasserm/super-resolution/tree/previous) but will not be maintained any longer.
