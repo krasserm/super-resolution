@@ -50,41 +50,21 @@ After download, extract them in the root folder of the project with
 
 The following examples can also be run in the *Demo* section of the notebooks.
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-from utils import resolve
-from PIL import Image
-
-def plot_sample(model, lr_image_path):
-    lr = np.expand_dims(Image.open(lr_image_path), axis=0)
-    
-    # Use provided model to convert a low-resolution image to a super-resolution image.
-    sr = resolve(model, lr)
-
-    plt.figure(figsize=(20, 10))
-
-    images = [lr[0], sr[0]]
-    titles = ['LR', f'SR (x4)']
-
-    for i, (img, title) in enumerate(zip(images, titles)):
-        plt.subplot(1, 2, i+1)
-        plt.imshow(img)
-        plt.title(title)
-        plt.xticks([])
-        plt.yticks([])
-```
-
 ### EDSR
 
 ```python
+from model import resolve_single
 from model.edsr import edsr
 
-model = edsr(scale=4, num_res_blocks=16)
-model.load_weights('weights/edsr-16-x4/weights.h5') # EDSR baseline, 1.52M parameters (see EDSR paper)
+from utils import load_image, plot_sample
 
-plot_sample(model, 'demo/0851x4-crop.png')
+model = edsr(scale=4, num_res_blocks=16)
+model.load_weights('weights/edsr-16-x4/weights.h5')
+
+lr = load_image('demo/0851x4-crop.png')
+sr = resolve_single(model, lr)
+
+plot_sample(lr, sr)
 ```
 
 ![result-edsr](docs/images/result-edsr.png)
@@ -95,10 +75,14 @@ plot_sample(model, 'demo/0851x4-crop.png')
 from model.wdsr import wdsr_b
 
 model = wdsr_b(scale=4, num_res_blocks=8)
-model.load_weights('weights/wdsr-b-8-x4/weights.h5') # WDSR baseline, 0.17M parameters (!)
+model.load_weights('weights/wdsr-b-8-x4/weights.h5')
 
-plot_sample(model, 'demo/0829x4-crop.png')
+lr = load_image('demo/0829x4-crop.png')
+sr = resolve_single(model, lr)
+
+plot_sample(lr, sr)
 ```
+
 ![result-wdsr](docs/images/result-wdsr.png)
 
 Weight normalization in WDSR models is implemented with the new `WeightNormalization` layer wrapper of 
@@ -110,9 +94,12 @@ Weight normalization in WDSR models is implemented with the new `WeightNormaliza
 from model.srgan import generator
 
 model = generator()
-model.load_weights('weights/srgan/gan_generator.h5') # SRGAN generator, 1.55M parameters (see SRGAN paper)
+model.load_weights('weights/srgan/gan_generator.h5')
 
-plot_sample(model, 'demo/0869x4-crop.png')
+lr = load_image('demo/0869x4-crop.png')
+sr = resolve_single(model, lr)
+
+plot_sample(lr, sr)
 ```
 
 ![result-srgan](docs/images/result-srgan.png)

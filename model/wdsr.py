@@ -3,7 +3,7 @@ import tensorflow_addons as tfa
 from tensorflow.python.keras.layers import Add, Conv2D, Input, Lambda
 from tensorflow.python.keras.models import Model
 
-from utils import normalize, denormalize, subpixel_conv2d
+from model.common import normalize, denormalize, subpixel_conv2d
 
 
 def wdsr_a(scale, num_filters=32, num_res_blocks=8, res_block_expansion=4, res_block_scaling=None):

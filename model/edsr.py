@@ -1,7 +1,7 @@
 from tensorflow.python.keras.layers import Add, Conv2D, Input, Lambda
 from tensorflow.python.keras.models import Model
 
-from utils import normalize, denormalize, subpixel_conv2d
+from model.common import normalize, denormalize, subpixel_conv2d
 
 
 def edsr(scale, num_filters=64, num_res_blocks=8, res_block_scaling=None):
