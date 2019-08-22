@@ -14,6 +14,10 @@ This projects also supports fine-tuning of EDSR models as generators in SRGAN-li
 
 ## News
 
+### Aug 22, 2019
+
+**Migration to Tensorflow 2.0 is now complete and located on [master](https://github.com/krasserm/super-resolution)**.
+
 ### Aug 15, 2019
 
 **On [master](https://github.com/krasserm/super-resolution), EDSR, WDSR and SRGAN models have been 
