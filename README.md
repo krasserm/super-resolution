@@ -1,4 +1,4 @@
-![Travis CI](https://travis-ci.com/krasserm/super-resolution.svg?branch=master)
+![Travis CI](https://travis-ci.com/krasserm/super-resolution.svg?branch=previous)
 
 # Single Image Super-Resolution with WDSR, EDSR and SRGAN
 
@@ -16,13 +16,13 @@ This projects also supports fine-tuning of EDSR models as generators in SRGAN-li
 
 ### Aug 15, 2019
 
-**On branch [wip-tf2](https://github.com/krasserm/super-resolution/tree/wip-tf2), EDSR, WDSR and SRGAN models have been 
+**On [master](https://github.com/krasserm/super-resolution), EDSR, WDSR and SRGAN models have been 
 migrated to [Tensorflow 2.0](https://www.tensorflow.org/beta)**. Although this is work in progress, models can already be 
 trained as described in the papers and pre-trained model are available. See 
 
-- [example-edsr.ipynb](https://github.com/krasserm/super-resolution/blob/wip-tf2/example-edsr.ipynb) 
-- [example-wdsr.ipynb](https://github.com/krasserm/super-resolution/blob/wip-tf2/example-wdsr.ipynb) 
-- [example-srgan.ipynb](https://github.com/krasserm/super-resolution/blob/wip-tf2/example-srgan.ipynb) 
+- [example-edsr.ipynb](https://github.com/krasserm/super-resolution/blob/master/example-edsr.ipynb) 
+- [example-wdsr.ipynb](https://github.com/krasserm/super-resolution/blob/master/example-wdsr.ipynb) 
+- [example-srgan.ipynb](https://github.com/krasserm/super-resolution/blob/master/example-srgan.ipynb) 
 
 DIV2K images are automatically downloaded and converted to binary format for faster loading. This is done by a `DIV2K` 
 data provider with an implementation based on `tf.data.Dataset`.
@@ -84,8 +84,8 @@ resize with bicubic interpolation (code for generating these figures not include
 ### EDSR + SRGAN
 
 **Support for custom [SRGAN training](#perceptual-loss-srgan) is still work in progress. If you'd like to see an 
-implementation  of the original SRGAN (as described in the paper) for Tensorflow 2.0, please go to [example-srgan.ipynb](https://github.com/krasserm/super-resolution/blob/wip-tf2/example-srgan.ipynb) 
-on branch [wip-tf2](https://github.com/krasserm/super-resolution/tree/wip-tf2).** Pre-trained models are available too.
+implementation  of the original SRGAN (as described in the paper) for Tensorflow 2.0, please go to [example-srgan.ipynb](https://github.com/krasserm/super-resolution/blob/master/example-srgan.ipynb) 
+on [master](https://github.com/krasserm/super-resolution).** Pre-trained models are available too.
 
 One problem with pixel-wise loss functions is that they fail to recover high-frequency details. Super-resolution results
 are typically overly smooth with lower perceptual quality, especially at scale x4. A perceptual loss as described in the 
@@ -355,7 +355,7 @@ Two models trained in that manner are available as pre-trained models:
 
 ## Weight normalization
 
-WDSR models are trained with [weight normalization](https://arxiv.org/abs/1602.07868). This branch uses a [modified Adam optimizer](https://github.com/krasserm/super-resolution/blob/master/optimizer/weightnorm.py) 
+WDSR models are trained with [weight normalization](https://arxiv.org/abs/1602.07868). This branch uses a [modified Adam optimizer](https://github.com/krasserm/super-resolution/blob/previous/optimizer/weightnorm.py) 
 for that purpose. The meanwhile outdated branch [wip-conv2d-weight-norm](https://github.com/krasserm/super-resolution/tree/wip-conv2d-weight-norm) 
 instead uses a specialized [`Conv2DWeightNorm`](https://github.com/krasserm/super-resolution/blob/wip-conv2d-weight-norm/layer.py) 
 layer and a default Adam optimizer (experimental work inspired by the official [WDSR Tensorflow](https://github.com/ychfan/tf_estimator_barebone/blob/master/models/wdsr.py) 
