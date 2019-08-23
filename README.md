@@ -20,7 +20,8 @@ Training and usage of EDSR, WDSR and SRGAN models is demonstrated in
 - [example-wdsr.ipynb](example-wdsr.ipynb)
 - [example-srgan.ipynb](example-srgan.ipynb) 
 
-See also the following sections for further details and examples.
+A high-level training API and command line interface is **work in progress**. See also the following sections for further
+details and [usage examples](#getting-started).
 
 ## Environment setup
 
