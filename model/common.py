@@ -1,10 +1,31 @@
 import numpy as np
 import tensorflow as tf
 
-from PIL import Image
-
 
 DIV2K_RGB_MEAN = np.array([0.4488, 0.4371, 0.4040]) * 255
+
+
+def resolve_single(model, lr):
+    """Numpy interface for super-resolution (single image)."""
+    return resolve(model, np.expand_dims(lr, axis=0))[0]
+
+
+def resolve(model, lr_batch):
+    """Numpy interface for super-resolution (image batch)."""
+    sr_batch = model.predict(lr_batch)
+    sr_batch = np.clip(sr_batch, 0, 255)
+    sr_batch = np.round(sr_batch)
+    sr_batch = sr_batch.astype(np.uint8)
+    return tf.constant(sr_batch)
+
+
+def evaluate(model, dataset):
+    psnr_values = []
+    for lr, hr in dataset:
+        sr = resolve(model, lr)
+        psnr_value = psnr(hr, sr)[0]
+        psnr_values.append(psnr_value)
+    return tf.reduce_mean(psnr_values)
 
 
 # ---------------------------------------
@@ -31,7 +52,7 @@ def normalize_m11(x):
 
 
 def denormalize_m11(x):
-    """Inverts normalization_m11."""
+    """Inverse of normalize_m11."""
     return (x + 1) * 127.5
 
 
@@ -53,27 +74,3 @@ def subpixel_conv2d(scale):
     return lambda x: tf.nn.depth_to_space(x, scale)
 
 
-# ---------------------------------------
-#  Model
-# ---------------------------------------
-
-
-def resolve_single(model, lr):
-    return resolve(model, np.expand_dims(lr, axis=0))[0]
-
-
-def resolve(model, lr_batch):
-    sr_batch = model.predict(lr_batch)
-    sr_batch = np.clip(sr_batch, 0, 255)
-    sr_batch = np.round(sr_batch)
-    sr_batch = sr_batch.astype(np.uint8)
-    return tf.constant(sr_batch)
-
-
-def evaluate(model, ds):
-    psnr_values = []
-    for lr, hr in ds:
-        sr = resolve(model, lr)
-        psnr_value = psnr(hr, sr)[0]
-        psnr_values.append(psnr_value)
-    return tf.reduce_mean(psnr_values)

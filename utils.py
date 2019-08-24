@@ -1,12 +1,7 @@
 import numpy as np
-import tensorflow as tf
 import matplotlib.pyplot as plt
 
 from PIL import Image
-
-
-def psnr(x1, x2):
-    return tf.image.psnr(x1, x2, max_val=255)
 
 
 def load_image(path):
