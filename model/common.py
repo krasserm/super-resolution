@@ -6,12 +6,10 @@ DIV2K_RGB_MEAN = np.array([0.4488, 0.4371, 0.4040]) * 255
 
 
 def resolve_single(model, lr):
-    """Numpy interface for super-resolution (single image)."""
     return resolve(model, np.expand_dims(lr, axis=0))[0]
 
 
 def resolve(model, lr_batch):
-    """Numpy interface for super-resolution (image batch)."""
     sr_batch = model.predict(lr_batch)
     sr_batch = np.clip(sr_batch, 0, 255)
     sr_batch = np.round(sr_batch)
