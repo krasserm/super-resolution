@@ -32,19 +32,18 @@ and activate it with
 
     conda activate sisr
 
-
 ## Getting started 
 
 Examples in this section require following pre-trained weights for running (see also example notebooks):  
 
 ### Pre-trained weights
 
-- [weights-edsr-16-x4.tar.gz](https://drive.google.com/open?id=14RAJsR2h12iNl8-QMMGpoD9aextgbjIj) 
+- [weights-edsr-16-x4.tar.gz](https://drive.google.com/open?id=1xjyW_0dDS4jSTxKVZwtlkyfS4Oso-GUF) 
     - EDSR x4 baseline as described in the EDSR paper: 16 residual blocks, 64 filters, 1.52M parameters. 
     - PSNR on DIV2K validation set = 28.89 dB (images 801 - 900, 6 + 4 pixel border included).
-- [weights-wdsr-b-8-x4.tar.gz](https://drive.google.com/open?id=1GFD0z1o3UXYvRORT486jnwZ9khSkz6Vv) 
-    - WDSR B x4 custom model (very small): 8 residual blocks, 32 filters, expansion factor 6, 0.17M parameters. 
-    - PSNR on DIV2K validation set = 28.36 dB (images 801 - 900, 6 + 4 pixel border included).
+- [weights-wdsr-b-32-x4.tar.gz](https://drive.google.com/open?id=1_EvxLsyZhKkg27xGPd8yVOjlVD_isdnz) 
+    - WDSR B x4 custom model: 32 residual blocks, 32 filters, expansion factor 6, 0.62M parameters. 
+    - PSNR on DIV2K validation set = 28.91 dB (images 801 - 900, 6 + 4 pixel border included).
 - [weights-srgan.tar.gz](https://drive.google.com/open?id=1u9ituA3ScttN9Vi-UkALmpO0dWQLm8Rv) 
     - SRGAN as described in the SRGAN paper: 1.55M parameters, trained with VGG54 content loss.
     
@@ -76,8 +75,8 @@ plot_sample(lr, sr)
 ```python
 from model.wdsr import wdsr_b
 
-model = wdsr_b(scale=4, num_res_blocks=8)
-model.load_weights('weights/wdsr-b-8-x4/weights.h5')
+model = wdsr_b(scale=4, num_res_blocks=32)
+model.load_weights('weights/wdsr-b-32-x4/weights.h5')
 
 lr = load_image('demo/0829x4-crop.png')
 sr = resolve_single(model, lr)
@@ -88,7 +87,10 @@ plot_sample(lr, sr)
 ![result-wdsr](docs/images/result-wdsr.png)
 
 Weight normalization in WDSR models is implemented with the new `WeightNormalization` layer wrapper of 
-[Tensorflow Addons](https://github.com/tensorflow/addons).
+[Tensorflow Addons](https://github.com/tensorflow/addons). In its latest version, this wrapper seems to 
+corrupt weights when running `model.predict(...)`. A workaround is to set `model.run_eagerly = True` or 
+compile the model with `model.compile(loss='mae')` in advance. This issue doesn't arise when calling the
+model directly with `model(...)` though. To be further investigated ... 
 
 ### SRGAN
 
@@ -199,9 +201,9 @@ accessed with `trainer.model`.
 from model.wdsr import wdsr_b
 from train import WdsrTrainer
 
-# Create a training context for a WDSR B x4 model with 8 
+# Create a training context for a WDSR B x4 model with 32 
 # residual blocks.
-trainer = WdsrTrainer(model=wdsr_b(scale=4, num_res_blocks=8), 
+trainer = WdsrTrainer(model=wdsr_b(scale=4, num_res_blocks=32), 
                       checkpoint_dir=f'.ckpt/wdsr-b-8-x4')
 
 # Train WDSR B model for 300,000 steps and evaluate model
@@ -234,13 +236,13 @@ from model.srgan import generator
 from train import SrganGeneratorTrainer
 
 # Create a training context for the generator (SRResNet) alone.
-pre_trainer = SrganGeneratorTrainer(generator=generator())
+pre_trainer = SrganGeneratorTrainer(model=generator(), checkpoint_dir=f'.ckpt/pre_generator')
 
 # Pre-train the generator with 1,000,000 steps (100,000 works fine too). 
 pre_trainer.train(train_ds, valid_ds.take(10), steps=1000000, evaluate_every=1000)
 
-# Save weights of pre-trained generator.
-pre_trainer.generator.save_weights('weights/srgan/pre_generator.h5')
+# Save weights of pre-trained generator (needed for fine-tuning with GAN).
+pre_trainer.model.save_weights('weights/srgan/pre_generator.h5')
 ```
 
 ### Generator fine-tuning (GAN)
@@ -251,7 +253,7 @@ from train import SrganTrainer
 
 # Create a new generator and init it with pre-trained weights.
 gan_generator = generator()
-gan_generator.load_weights('weights/srgan/gan_generator.h5')
+gan_generator.load_weights('weights/srgan/pre_generator.h5')
 
 # Create a training context for the GAN (generator + discriminator).
 gan_trainer = SrganTrainer(generator=gan_generator, discriminator=discriminator())

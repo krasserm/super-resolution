@@ -1,13 +1,10 @@
-import os
 import time
 import tensorflow as tf
 
 from model import evaluate
 from model import srgan
-from model.common import psnr
 
 from tensorflow.keras.applications.vgg19 import preprocess_input
-from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.losses import MeanAbsoluteError
 from tensorflow.keras.losses import MeanSquaredError
@@ -15,17 +12,16 @@ from tensorflow.keras.metrics import Mean
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.optimizers.schedules import PiecewiseConstantDecay
 
-# TODO: Tensorboard integration
 
-
-class EdsrTrainer:
+class Trainer:
     def __init__(self,
                  model,
-                 checkpoint_dir='./ckpt/edsr',
-                 learning_rate=PiecewiseConstantDecay(boundaries=[200000], values=[1e-4, 5e-5])):
+                 loss,
+                 learning_rate,
+                 checkpoint_dir='./ckpt/edsr'):
 
         self.now = None
-        self.loss = MeanAbsoluteError()
+        self.loss = loss
         self.checkpoint = tf.train.Checkpoint(step=tf.Variable(0),
                                               psnr=tf.Variable(-1.0),
                                               optimizer=Adam(learning_rate),
@@ -40,7 +36,7 @@ class EdsrTrainer:
     def model(self):
         return self.checkpoint.model
 
-    def train(self, train_dataset, valid_dataset, steps=300000, evaluate_every=1000, save_best_only=True):
+    def train(self, train_dataset, valid_dataset, steps, evaluate_every=1000, save_best_only=False):
         loss_mean = Mean()
 
         ckpt_mgr = self.checkpoint_manager
@@ -63,7 +59,7 @@ class EdsrTrainer:
                 psnr_value = self.evaluate(valid_dataset)
 
                 duration = time.perf_counter() - self.now
-                print(f'Loss at step {step} = {loss_value.numpy():.3f}, PSNR = {psnr_value.numpy():3f} ({duration:.2f}s)')
+                print(f'{step}/{steps}: loss = {loss_value.numpy():.3f}, PSNR = {psnr_value.numpy():3f} ({duration:.2f}s)')
 
                 if save_best_only and psnr_value <= ckpt.psnr:
                     self.now = time.perf_counter()
@@ -98,64 +94,37 @@ class EdsrTrainer:
             print(f'Model restored from checkpoint at step {self.checkpoint.step.numpy()}.')
 
 
-class WdsrTrainer:
-    #
-    # TODO: optimizer checkpoints
-    #
+class EdsrTrainer(Trainer):
     def __init__(self,
                  model,
-                 checkpoint_dir='./ckpt/wdsr',
-                 learning_rate=PiecewiseConstantDecay(boundaries=[200000], values=[1e-3, 5e-4])):
-
-        self.model = model
-        self.checkpoint_dir = checkpoint_dir
-        self.learning_rate = learning_rate
+                 checkpoint_dir,
+                 learning_rate=PiecewiseConstantDecay(boundaries=[200000], values=[1e-4, 5e-5])):
+        super().__init__(model, loss=MeanAbsoluteError(), learning_rate=learning_rate, checkpoint_dir=checkpoint_dir)
 
     def train(self, train_dataset, valid_dataset, steps=300000, evaluate_every=1000, save_best_only=True):
-
-        # --------------------------------------------------------------
-        # FIXME: WDSR training is numerically unstable (see issue #28)
-        # --------------------------------------------------------------
-
-        checkpoint_callback = ModelCheckpoint(os.path.join(self.checkpoint_dir, 'ckpt-{epoch:02d}-{val_psnr:.2f}'),
-                                              save_best_only=save_best_only,
-                                              save_weights_only=True,
-                                              monitor='val_psnr',
-                                              mode='max')
-
-        self.model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss='mean_absolute_error', metrics=[psnr])
-        self.model.fit(train_dataset,
-                       epochs=steps//evaluate_every, # approximation
-                       steps_per_epoch=evaluate_every,
-                       validation_data=valid_dataset,
-                       callbacks=[checkpoint_callback])
-
-    def evaluate(self, dataset):
-        return evaluate(self.model, dataset)
-
-    def restore(self):
-        ckpt = tf.train.Checkpoint()
-        ckpt_mgr = tf.train.CheckpointManager(ckpt, self.checkpoint_dir, max_to_keep=None)
-        self.model.load_weights(ckpt_mgr.latest_checkpoint)
+        super().train(train_dataset, valid_dataset, steps, evaluate_every, save_best_only)
 
 
-class SrganGeneratorTrainer:
-    #
-    # TODO: model and optimizer checkpoints
-    #
-    def __init__(self, generator, learning_rate=1e-4):
-        self.generator = generator
-        self.learning_rate = learning_rate
+class WdsrTrainer(Trainer):
+    def __init__(self,
+                 model,
+                 checkpoint_dir,
+                 learning_rate=PiecewiseConstantDecay(boundaries=[200000], values=[1e-3, 5e-4])):
+        super().__init__(model, loss=MeanAbsoluteError(), learning_rate=learning_rate, checkpoint_dir=checkpoint_dir)
 
-    def train(self, train_dataset, valid_dataset, steps=1000000, evaluate_every=1000):
-        self.generator.compile(optimizer=Adam(self.learning_rate), loss='mean_squared_error', metrics=[psnr])
-        self.generator.fit(train_dataset,
-                           epochs=steps // evaluate_every,
-                           steps_per_epoch=evaluate_every,
-                           validation_data=valid_dataset)
+    def train(self, train_dataset, valid_dataset, steps=300000, evaluate_every=1000, save_best_only=True):
+        super().train(train_dataset, valid_dataset, steps, evaluate_every, save_best_only)
 
-    def evaluate(self, dataset):
-        return evaluate(self.generator, dataset)
+
+class SrganGeneratorTrainer(Trainer):
+    def __init__(self,
+                 model,
+                 checkpoint_dir,
+                 learning_rate=1e-4):
+        super().__init__(model, loss=MeanSquaredError(), learning_rate=learning_rate, checkpoint_dir=checkpoint_dir)
+
+    def train(self, train_dataset, valid_dataset, steps=1000000, evaluate_every=1000, save_best_only=True):
+        super().train(train_dataset, valid_dataset, steps, evaluate_every, save_best_only)
 
 
 class SrganTrainer:
@@ -197,7 +166,7 @@ class SrganTrainer:
             dls_metric(dl)
 
             if step % 50 == 0:
-                print(f'Step: {step}, perceptual loss = {pls_metric.result():.4f}, discriminator loss = {dls_metric.result():.4f}')
+                print(f'{step}/{steps}, perceptual loss = {pls_metric.result():.4f}, discriminator loss = {dls_metric.result():.4f}')
                 pls_metric.reset_states()
                 dls_metric.reset_states()
 
@@ -240,10 +209,3 @@ class SrganTrainer:
         hr_loss = self.binary_cross_entropy(tf.ones_like(hr_out), hr_out)
         sr_loss = self.binary_cross_entropy(tf.zeros_like(sr_out), sr_out)
         return hr_loss + sr_loss
-
-
-
-
-
-
-

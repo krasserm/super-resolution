@@ -6,15 +6,16 @@ DIV2K_RGB_MEAN = np.array([0.4488, 0.4371, 0.4040]) * 255
 
 
 def resolve_single(model, lr):
-    return resolve(model, np.expand_dims(lr, axis=0))[0]
+    return resolve(model, tf.expand_dims(lr, axis=0))[0]
 
 
 def resolve(model, lr_batch):
-    sr_batch = model.predict(lr_batch)
-    sr_batch = np.clip(sr_batch, 0, 255)
-    sr_batch = np.round(sr_batch)
-    sr_batch = sr_batch.astype(np.uint8)
-    return tf.constant(sr_batch)
+    lr_batch = tf.cast(lr_batch, tf.float32)
+    sr_batch = model(lr_batch)
+    sr_batch = tf.clip_by_value(sr_batch, 0, 255)
+    sr_batch = tf.round(sr_batch)
+    sr_batch = tf.cast(sr_batch, tf.uint8)
+    return sr_batch
 
 
 def evaluate(model, dataset):
