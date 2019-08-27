@@ -6,4 +6,4 @@ dependencies:
 - Pillow=6.0.0
 - pip:
   - tensorflow-gpu==2.0.0-rc0
-  - tfa-nightly
+  - tensorflow-addons==0.4.0
