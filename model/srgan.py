@@ -2,7 +2,7 @@ from tensorflow.python.keras.layers import Add, BatchNormalization, Conv2D, Dens
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.applications.vgg19 import VGG19
 
-from model.common import subpixel_conv2d, normalize_01, normalize_m11, denormalize_m11
+from model.common import pixel_shuffle, normalize_01, normalize_m11, denormalize_m11
 
 LR_SIZE = 24
 HR_SIZE = 96
@@ -10,7 +10,7 @@ HR_SIZE = 96
 
 def upsample(x_in, num_filters):
     x = Conv2D(num_filters, kernel_size=3, padding='same')(x_in)
-    x = Lambda(subpixel_conv2d(scale=2))(x)
+    x = Lambda(pixel_shuffle(scale=2))(x)
     return PReLU(shared_axes=[1, 2])(x)
 
 

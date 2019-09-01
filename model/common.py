@@ -69,7 +69,7 @@ def psnr(x1, x2):
 # ---------------------------------------
 
 
-def subpixel_conv2d(scale):
+def pixel_shuffle(scale):
     return lambda x: tf.nn.depth_to_space(x, scale)
 
 

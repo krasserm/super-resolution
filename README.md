@@ -7,7 +7,7 @@ A [Tensorflow 2.0](https://www.tensorflow.org/beta) based implementation of
 - [Enhanced Deep Residual Networks for Single Image Super-Resolution](https://arxiv.org/abs/1707.02921) (EDSR), winner 
   of the [NTIRE 2017](http://www.vision.ee.ethz.ch/ntire17/) super-resolution challenge.
 - [Wide Activation for Efficient and Accurate Image Super-Resolution](https://arxiv.org/abs/1808.08718) (WDSR), winner 
-  of the [NTIRE 2018](http://www.vision.ee.ethz.ch/ntire18/) super-resolution challenge.
+  of the [NTIRE 2018](http://www.vision.ee.ethz.ch/ntire18/) super-resolution challenge (realistic tracks).
 - [Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network](https://arxiv.org/abs/1609.04802) (SRGAN).
 
 This is a complete re-write if the old Keras/Tensorflow 1.x based implementation available [here](https://github.com/krasserm/super-resolution/tree/previous).
@@ -31,6 +31,10 @@ Create a new [conda](https://conda.io) environment with
 and activate it with
 
     conda activate sisr
+
+## Introduction
+
+You can find an introduction to single-image super-resolution in [this article](article.ipynb).  
 
 ## Getting started 
 
@@ -189,7 +193,7 @@ psnr = trainer.evaluate(valid_ds)
 print(f'PSNR = {psnr.numpy():3f}')
 
 # Save weights to separate location.
-trainer.model.save_weights('weights/edsr-16-x4/weights')                                    
+trainer.model.save_weights('weights/edsr-16-x4/weights.h5')                                    
 ```
 
 Interrupting training and restarting it again resumes from the latest saved checkpoint. The trained Keras model can be
@@ -224,7 +228,7 @@ psnr = trainer.evaluate(valid_ds)
 print(f'PSNR = {psnr.numpy():3f}')
 
 # Save weights to separate location.
-trainer.model.save_weights(weights_file)
+trainer.model.save_weights('weights/wdsr-b-32-x4/weights.h5')
 ```
 
 ## SRGAN
@@ -264,4 +268,29 @@ gan_trainer.train(train_ds, steps=200000)
 # Save weights of generator and discriminator.
 gan_trainer.generator.save_weights('weights/srgan/gan_generator.h5')
 gan_trainer.discriminator.save_weights('weights/srgan/gan_discriminator.h5')
+```
+
+## SRGAN for fine-tuning EDSR and WDSR models
+
+It is also possible to fine-tune EDSR and WDSR x4 models with SRGAN. They can be used as drop-in replacement for the
+original SRGAN generator. More details in [this article](article.ipynb).
+
+```python
+# Create EDSR generator and init with pre-trained weights
+generator = edsr(scale=4, num_res_blocks=16)
+generator.load_weights('weights/edsr-16-x4/weights.h5')
+
+# Fine-tune EDSR model via SRGAN training.
+gan_trainer = SrganTrainer(generator=generator, discriminator=discriminator())
+gan_trainer.train(train_ds, steps=200000)
+```
+
+```python
+# Create WDSR B generator and init with pre-trained weights
+generator = wdsr_b(scale=4, num_res_blocks=32)
+generator.load_weights('weights/wdsr-b-16-32/weights.h5')
+
+# Fine-tune WDSR B  model via SRGAN training.
+gan_trainer = SrganTrainer(generator=generator, discriminator=discriminator())
+gan_trainer.train(train_ds, steps=200000)
 ```
