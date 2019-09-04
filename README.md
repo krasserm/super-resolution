@@ -34,7 +34,8 @@ and activate it with
 
 ## Introduction
 
-You can find an introduction to single-image super-resolution in [this article](article.ipynb).  
+You can find an introduction to single-image super-resolution in [this article](article.ipynb). It also demonstrates
+how EDSR and WDSR models can be fine-tuned with SRGAN (see also [this section](#srgan-for-fine-tuning-edsr-and-wdsr-models)).
 
 ## Getting started 
 
