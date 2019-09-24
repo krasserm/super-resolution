@@ -34,7 +34,7 @@ and activate it with
 
 ## Introduction
 
-You can find an introduction to single-image super-resolution in [this article](https://nbviewer.jupyter.org/github/krasserm/super-resolution/blob/master/article.ipynb). 
+You can find an introduction to single-image super-resolution in [this article](https://krasserm.github.io/2019/09/04/super-resolution/). 
 It also demonstrates how EDSR and WDSR models can be fine-tuned with SRGAN (see also [this section](#srgan-for-fine-tuning-edsr-and-wdsr-models)).
 
 ## Getting started 
@@ -274,7 +274,7 @@ gan_trainer.discriminator.save_weights('weights/srgan/gan_discriminator.h5')
 ## SRGAN for fine-tuning EDSR and WDSR models
 
 It is also possible to fine-tune EDSR and WDSR x4 models with SRGAN. They can be used as drop-in replacement for the
-original SRGAN generator. More details in [this article](article.ipynb).
+original SRGAN generator. More details in [this article](https://krasserm.github.io/2019/09/04/super-resolution/).
 
 ```python
 # Create EDSR generator and init with pre-trained weights
