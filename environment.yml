@@ -4,6 +4,7 @@ dependencies:
 - pip
 - tqdm=4.32.1
 - Pillow=6.0.0
+- matplotlib=3.1.1
 - pip:
-  - tensorflow-gpu==2.0.0-rc0
-  - tensorflow-addons==0.4.0
+  - tensorflow-gpu==2.0.0
+  - tensorflow-addons==0.5.2
