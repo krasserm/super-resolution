@@ -46,7 +46,7 @@ Examples in this section require following pre-trained weights for running (see 
 - [weights-edsr-16-x4.tar.gz](https://drive.google.com/open?id=1xjyW_0dDS4jSTxKVZwtlkyfS4Oso-GUF) 
     - EDSR x4 baseline as described in the EDSR paper: 16 residual blocks, 64 filters, 1.52M parameters. 
     - PSNR on DIV2K validation set = 28.89 dB (images 801 - 900, 6 + 4 pixel border included).
-- [weights-wdsr-b-32-x4.tar.gz](https://drive.google.com/open?id=1_EvxLsyZhKkg27xGPd8yVOjlVD_isdnz) 
+- [weights-wdsr-b-32-x4.tar.gz](https://drive.google.com/open?id=1JfQNGQZ9cG-lyC5EB0W3MpySjPlDJXpU) 
     - WDSR B x4 custom model: 32 residual blocks, 32 filters, expansion factor 6, 0.62M parameters. 
     - PSNR on DIV2K validation set = 28.91 dB (images 801 - 900, 6 + 4 pixel border included).
 - [weights-srgan.tar.gz](https://drive.google.com/open?id=1u9ituA3ScttN9Vi-UkALmpO0dWQLm8Rv) 
