@@ -2,7 +2,7 @@
 
 # Single Image Super-Resolution with EDSR, WDSR and SRGAN
 
-A [Tensorflow 2.0](https://www.tensorflow.org/beta) based implementation of
+A [Tensorflow 2.x](https://www.tensorflow.org/beta) based implementation of
 
 - [Enhanced Deep Residual Networks for Single Image Super-Resolution](https://arxiv.org/abs/1707.02921) (EDSR), winner 
   of the [NTIRE 2017](http://www.vision.ee.ethz.ch/ntire17/) super-resolution challenge.
