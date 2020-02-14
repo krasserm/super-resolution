@@ -10,9 +10,10 @@ A [Tensorflow 2.x](https://www.tensorflow.org/beta) based implementation of
   of the [NTIRE 2018](http://www.vision.ee.ethz.ch/ntire18/) super-resolution challenge (realistic tracks).
 - [Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network](https://arxiv.org/abs/1609.04802) (SRGAN).
 
-This is a complete re-write if the old Keras/Tensorflow 1.x based implementation available [here](https://github.com/krasserm/super-resolution/tree/previous).
+This is a complete re-write of the old Keras/Tensorflow 1.x based implementation available [here](https://github.com/krasserm/super-resolution/tree/previous).
 Some parts are still work in progress but you can already train models as described in the papers via a high-level training 
-API. [Training](#training) and [usage](#getting-started) examples are given in the notebooks
+API. Furthermore, you can also [fine-tune](#srgan-for-fine-tuning-edsr-and-wdsr-models) EDSR and WDSR models in an SRGAN 
+context. [Training](#training) and [usage](#getting-started) examples are given in the notebooks
 
 - [example-edsr.ipynb](example-edsr.ipynb)
 - [example-wdsr.ipynb](example-wdsr.ipynb)
@@ -20,7 +21,10 @@ API. [Training](#training) and [usage](#getting-started) examples are given in t
 
 A `DIV2K` [data provider](#div2k-dataset) automatically downloads [DIV2K](https://data.vision.ee.ethz.ch/cvl/DIV2K/) 
 training and validation images of given scale (2, 3, 4 or 8) and downgrade operator ("bicubic", "unknown", "mild" or 
-"difficult").
+"difficult"). 
+
+**Important:** if you want to evaluate the pre-trained models with a dataset other than DIV2K please read 
+[this comment](https://github.com/krasserm/super-resolution/issues/19#issuecomment-586114933) first.  
 
 ## Environment setup
 
