@@ -24,7 +24,7 @@ training and validation images of given scale (2, 3, 4 or 8) and downgrade opera
 "difficult"). 
 
 **Important:** if you want to evaluate the pre-trained models with a dataset other than DIV2K please read 
-[this comment](https://github.com/krasserm/super-resolution/issues/19#issuecomment-586114933) first.  
+[this comment](https://github.com/krasserm/super-resolution/issues/19#issuecomment-586114933) (and replies) first.  
 
 ## Environment setup
 
