@@ -47,13 +47,13 @@ Examples in this section require following pre-trained weights for running (see 
 
 ### Pre-trained weights
 
-- [weights-edsr-16-x4.tar.gz](http://martin-krasser.de/sisr/weights-edsr-16-x4.tar.gz) 
+- [weights-edsr-16-x4.tar.gz](https://martin-krasser.de/sisr/weights-edsr-16-x4.tar.gz) 
     - EDSR x4 baseline as described in the EDSR paper: 16 residual blocks, 64 filters, 1.52M parameters. 
     - PSNR on DIV2K validation set = 28.89 dB (images 801 - 900, 6 + 4 pixel border included).
-- [weights-wdsr-b-32-x4.tar.gz](http://martin-krasser.de/sisr/weights-wdsr-b-32-x4.tar.gz) 
+- [weights-wdsr-b-32-x4.tar.gz](https://martin-krasser.de/sisr/weights-wdsr-b-32-x4.tar.gz) 
     - WDSR B x4 custom model: 32 residual blocks, 32 filters, expansion factor 6, 0.62M parameters. 
     - PSNR on DIV2K validation set = 28.91 dB (images 801 - 900, 6 + 4 pixel border included).
-- [weights-srgan.tar.gz](http://martin-krasser.de/sisr/weights-srgan.tar.gz) 
+- [weights-srgan.tar.gz](https://martin-krasser.de/sisr/weights-srgan.tar.gz) 
     - SRGAN as described in the SRGAN paper: 1.55M parameters, trained with VGG54 content loss.
     
 After download, extract them in the root folder of the project with
