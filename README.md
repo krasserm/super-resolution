@@ -169,7 +169,7 @@ The following training examples use the [training and validation datasets](#div2
 training API is designed around *steps* (= minibatch updates) rather than *epochs* to better match the descriptions in the 
 papers.
 
-## EDSR
+### EDSR
 
 ```python
 from model.edsr import edsr
@@ -204,7 +204,7 @@ trainer.model.save_weights('weights/edsr-16-x4/weights.h5')
 Interrupting training and restarting it again resumes from the latest saved checkpoint. The trained Keras model can be
 accessed with `trainer.model`.
 
-## WDSR
+### WDSR
 
 ```python
 from model.wdsr import wdsr_b
@@ -236,7 +236,7 @@ print(f'PSNR = {psnr.numpy():3f}')
 trainer.model.save_weights('weights/wdsr-b-32-x4/weights.h5')
 ```
 
-## SRGAN
+### SRGAN
 
 ### Generator pre-training
 
@@ -275,7 +275,7 @@ gan_trainer.generator.save_weights('weights/srgan/gan_generator.h5')
 gan_trainer.discriminator.save_weights('weights/srgan/gan_discriminator.h5')
 ```
 
-## SRGAN for fine-tuning EDSR and WDSR models
+### SRGAN for fine-tuning EDSR and WDSR models
 
 It is also possible to fine-tune EDSR and WDSR x4 models with SRGAN. They can be used as drop-in replacement for the
 original SRGAN generator. More details in [this article](https://krasserm.github.io/2019/09/04/super-resolution/).
@@ -299,3 +299,16 @@ generator.load_weights('weights/wdsr-b-16-32/weights.h5')
 gan_trainer = SrganTrainer(generator=generator, discriminator=discriminator())
 gan_trainer.train(train_ds, steps=200000)
 ```
+
+## Docker
+
+You may try out models in docker using the provided Dockerfile.
+
+```bash
+docker build -t super-resolution -f docker/Dockerfile .
+docker run -ti --rm -v "${PWD}":/working super-resolution edsr demo/0829x4-crop.png
+docker run -ti --rm -v "${PWD}":/working super-resolution wdsr demo/0829x4-crop.png
+docker run -ti --rm -v "${PWD}":/working super-resolution srgan demo/0829x4-crop.png
+```
+
+After running, look in the demo folder for the scaled images to compare.
