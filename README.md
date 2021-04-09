@@ -311,4 +311,10 @@ docker run -ti --rm -v "${PWD}":/working super-resolution wdsr demo/0829x4-crop.
 docker run -ti --rm -v "${PWD}":/working super-resolution srgan demo/0829x4-crop.png
 ```
 
+If you wish to use nvidia CUDA in passthrough with nvidia-docker, you may do that as well.
+
+```bash
+docker run -ti --rm -v "${PWD}":/working --gpus all super-resolution edsr demo/0829x4-crop.png
+```
+
 After running, look in the demo folder for the scaled images to compare.
