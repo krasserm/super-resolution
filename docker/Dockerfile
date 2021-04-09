@@ -1,4 +1,3 @@
-#FROM ubuntu:18.04
 FROM ubuntu:20.04
 
 WORKDIR /app
@@ -38,15 +37,6 @@ RUN \
         conda env create -f environment.yml \
     " &&\
     apt-get clean
-
-# # Old way to install cuda for reference in 18.04
-# RUN \
-#     add-apt-repository ppa:graphics-drivers &&\
-#     apt-key adv --fetch-keys  http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub &&\
-#     bash -c 'echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda.list' &&\
-#     bash -c 'echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda_learn.list' &&\
-#     apt update &&\
-#     DEBIAN_FRONTEND='noninteractive' apt install -y cuda-10-1 libcudnn7
 
 COPY docker/*.py /app/
 COPY docker/run.sh /app
