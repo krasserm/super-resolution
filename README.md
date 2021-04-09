@@ -318,3 +318,14 @@ docker run -ti --rm -v "${PWD}":/working --gpus all super-resolution edsr demo/0
 ```
 
 After running, look in the demo folder for the scaled images to compare.
+
+### Training with DIV2K in Docker
+
+You can also use the Docker container to train your own models, and then leverage them for image processing.
+
+```bash
+mkdir -p data/images
+cp demo/*.png data/images
+docker build -t super-resolution -f docker/Dockerfile .
+docker run -ti --rm -v "${PWD}":/working -v "${PWD}/data":/data --gpus all super-resolution div2k_train
+```

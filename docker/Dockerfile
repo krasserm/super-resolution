@@ -2,14 +2,11 @@ FROM ubuntu:20.04
 
 WORKDIR /app
 
-COPY model/ /app/model/
-COPY *.py /app/
-COPY LICENSE /app
 COPY environment.yml /app
 
 RUN \
     apt-get update &&\
-    DEBIAN_FRONTEND='noninteractive' apt-get install -y python wget nvidia-cuda-dev=10.1.243-3 &&\
+    DEBIAN_FRONTEND='noninteractive' apt-get install -y python wget nvidia-cuda-dev=10.1.243-3 nvidia-cuda-toolkit=10.1.243-3 &&\
     wget https://martin-krasser.de/sisr/weights-edsr-16-x4.tar.gz &&\
     wget https://martin-krasser.de/sisr/weights-wdsr-b-32-x4.tar.gz &&\
     wget https://martin-krasser.de/sisr/weights-srgan.tar.gz &&\
@@ -38,6 +35,9 @@ RUN \
     " &&\
     apt-get clean
 
+COPY model/ /app/model/
+COPY *.py /app/
+COPY LICENSE /app
 COPY docker/*.py /app/
 COPY docker/run.sh /app
 
