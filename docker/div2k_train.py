@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from data import DIV2K
 from model.srgan import generator, discriminator
-from train import SrganTrainer, SrganGeneratorTrainer
+from train import SrganTrainer, EdsrTrainer
 
 # %matplotlib inline
 
@@ -37,12 +37,12 @@ check_dir = f'/data/ckpt/pre_generator'
 os.makedirs(check_dir, exist_ok=True)
 train_ds = div2k_train.dataset(batch_size=16, random_transform=True)
 valid_ds = div2k_valid.dataset(batch_size=16, random_transform=True, repeat_count=1)
-pre_trainer = SrganGeneratorTrainer(model=generator(), checkpoint_dir=check_dir)
+pre_trainer = EdsrTrainer(model=generator(), checkpoint_dir=check_dir)
 pre_trainer.train(
                     train_ds,
                     valid_ds.take(1),
-                    steps=1000000, 
-                    #steps=1000, 
+                    #steps=1000000, 
+                    steps=1000, 
                     evaluate_every=1000, 
                     save_best_only=False
 )
@@ -54,8 +54,8 @@ gan_generator.load_weights(weights_file('pre_generator.h5'))
 gan_trainer = SrganTrainer(generator=gan_generator, discriminator=discriminator())
 gan_trainer.train(
                     train_ds,
-                    steps=200000
-                    #steps=100
+                    #steps=200000
+                    steps=100
 )
 gan_trainer.generator.save_weights(weights_file('gan_generator.h5'))
 gan_trainer.discriminator.save_weights(weights_file('gan_discriminator.h5'))
