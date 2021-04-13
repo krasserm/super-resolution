@@ -238,7 +238,7 @@ trainer.model.save_weights('weights/wdsr-b-32-x4/weights.h5')
 
 ### SRGAN
 
-### Generator pre-training
+#### Generator pre-training
 
 ```python
 from model.srgan import generator
@@ -254,7 +254,7 @@ pre_trainer.train(train_ds, valid_ds.take(10), steps=1000000, evaluate_every=100
 pre_trainer.model.save_weights('weights/srgan/pre_generator.h5')
 ```
 
-### Generator fine-tuning (GAN)
+#### Generator fine-tuning (GAN)
 
 ```python
 from model.srgan import generator, discriminator
