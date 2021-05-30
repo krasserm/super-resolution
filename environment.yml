@@ -1,6 +1,7 @@
 name: sisr
 dependencies:
 - python=3.6
+- cudatoolkit=10.1
 - pip
 - tqdm=4.32.1
 - Pillow=6.0.0
@@ -8,3 +9,5 @@ dependencies:
 - pip:
   - tensorflow==2.3.1
   - tensorflow-addons==0.11.2
+  - notebook
+
